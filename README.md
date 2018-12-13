@@ -1,6 +1,6 @@
 # Matrix Input for Shiny
 
-## Usage
+## Example App
 ```
 library(shinyMatrix)
 
