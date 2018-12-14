@@ -57,6 +57,10 @@ matrixInput("matrix2",
   data = matrix(letters[1:12], 3, 4)
 )
 ```
+## Get value
+
+You can access the value from the matrix input using `input$inputId` in your server function. The result will always be a matrix of the class defined in `matrixInput`.
+
 
 ## Update Input Field
 
