@@ -55,7 +55,7 @@ matrixInput("matrix1", class = "numeric")
 matrixInput("matrix2",
   rows = list(
     names = TRUE,
-    edideren Tabellen entsprechend automatisch anpassen. Das macht es für den User wesentlich einfacher und ich denke auch für uns etwas.tableNames = TRUE),
+    editableNames = TRUE),
   data = matrix(letters[1:12], 3, 4)
 )
 ```
