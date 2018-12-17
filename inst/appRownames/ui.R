@@ -1,8 +1,6 @@
 library(shinyMatrix)
 
 m <- diag(5)
-# colnames(m) <- 1:3
-# rownames(m) <- letters[1:3]
 
 shiny::tagList(
   shiny::fluidPage(
@@ -13,10 +11,12 @@ shiny::tagList(
         value = m,
         class = "numeric",
         cols = list(
-          names = TRUE
+          names = TRUE,
+          editableNames = TRUE
         ),
         rows = list(
-          names = TRUE
+          names = TRUE,
+          editableNames = TRUE
         )
       )),
       column(6, tableOutput("table"))

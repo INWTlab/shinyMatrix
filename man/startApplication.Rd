@@ -4,7 +4,7 @@
 \alias{startApplication}
 \title{Start Application}
 \usage{
-startApplication(port = 4242)
+startApplication(app = "app", port = 4242)
 }
 \arguments{
 \item{port}{port of web application}

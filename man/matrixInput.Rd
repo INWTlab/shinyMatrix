@@ -4,7 +4,9 @@
 \alias{matrixInput}
 \title{Create a matrix input field}
 \usage{
-matrixInput(inputId, rows = 4, cols = 4, type = "character")
+matrixInput(inputId, value = matrix("", 1, 1), inputClass = "",
+  rows = list(), cols = list(), class = "character", paste = FALSE,
+  copy = FALSE)
 }
 \arguments{
 \item{inputId}{The input slot that will be used to access the value}

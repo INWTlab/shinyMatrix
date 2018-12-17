@@ -74,9 +74,19 @@ updateMatrixInput(session, inputId, value = NULL)
 
 `value` is the data object. In the future there should be also support to update the other parameters.
 
-## Example App
+## Example Apps
 ```r
 library(shinyMatrix)
 
-startApplication()
+## Basic Functionality
+startApplication("app")
+
+## Copy Pasting
+startApplication("appCopy")
+
+## Update Matrix Input from R
+startApplication("appUpdate")
+
+## Editable Rownames
+startApplication("appRownames")
 ```

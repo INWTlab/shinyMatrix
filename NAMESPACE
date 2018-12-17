@@ -2,6 +2,7 @@
 
 export(matrixInput)
 export(startApplication)
+export(updateMatrixInput)
 importFrom(shiny,runApp)
 importFrom(shiny,singleton)
 importFrom(shiny,tagList)
