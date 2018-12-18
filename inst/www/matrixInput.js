@@ -18,7 +18,7 @@
 
         return table;
     };
- 
+
     function updateTable(table, nrow, ncol, data) {
         for (var i = 0; i < nrow; i++){
             var tr = $(".matrix-input-row", table).eq(i);
@@ -60,7 +60,6 @@
         }
     };
 
-
     function newColName(n) {
         var i = n % 26;
         var letter = String.fromCharCode(65 + i);
@@ -72,6 +71,7 @@
             return letter;
         }
     }
+
     function isEmpty(obj) {
         if (obj == null) return true;
 
@@ -82,7 +82,6 @@
         return true;
     }
 
-    // default functionality
     function createColHeader(tableEl, value){
         var colHeader = $("<tr>");
         colHeader.addClass("matrix-input-col-header");
@@ -132,7 +131,6 @@
         if (addHeader) tableEl.prepend(colHeader);
     }
 
-    // default functionality
     function createRowHeader(tableEl, value){
         $("tr", tableEl).prepend($("<th>"));
 
@@ -168,7 +166,6 @@
         }
     }
 
-
     function createInput(value){
         var inputEl = $("<input>");
 
@@ -176,7 +173,6 @@
 
         return inputEl;
     };
-
 
     function parseTSV(content){
         return content.split("\n").map(function(row){
@@ -210,6 +206,8 @@
                     td.addClass("matrix-input-cell-pasted");
                 }
             }
+
+            extendTable($(tableEl).closest(".matrix-input"));
         });
     };
 
@@ -217,8 +215,12 @@
 
     function addInputBindings(inputEl) {
         inputEl.on("blur", function(){
+            var el = $(this).closest(".matrix-input");
+
             $(this).closest(".matrix-input").trigger("change");
             $(this).parent().html($(this).val());
+
+            extendTable(el);
         });
 
         inputEl.on("keyup", function(e){
@@ -284,11 +286,14 @@
         });
     };
 
-    function addBindings(tableEl) {
+    function addBindings(el) {
+        var options = $(el).data("options");
+
         $("td.matrix-input-cell").off("click");
 
-        $("td.matrix-input-cell", tableEl).click(function(e){
+        $("td.matrix-input-cell", el).click(function(e){
             var inputEl = createInput($(this).text());
+            inputEl.select();
             addInputBindings(inputEl);
 
             $(this).html("");
@@ -296,6 +301,22 @@
 
             inputEl.focus();
         });
+
+        if (options.copy){
+            addCopyBinding(el);
+        }
+
+        if (options.paste){
+            addPasteBinding(el);
+        }
+
+        if (options.rows.editableNames){
+            addHeaderBinding(el, ".matrix-input-row-header-cell");
+        }
+
+        if (options.cols.editableNames){
+            addHeaderBinding(el, ".matrix-input-col-header-cell");
+        }
     };
 
     function addHeaderBinding(tableEl, selector) {
@@ -303,6 +324,7 @@
 
         $(selector, tableEl).dblclick(function(e){
             var inputEl = createInput($(this).text());
+            inputEl.select();
             addHeaderInputBindings(inputEl);
 
             $(this).html("");
@@ -311,7 +333,6 @@
             inputEl.focus();
         });
     };
-
 
     function addHeaderInputBindings(inputEl) {
         inputEl.on("blur", function(){
@@ -326,8 +347,6 @@
             }
         });
     };
-
-
 
     var selectStart = null;
 
@@ -409,7 +428,6 @@
 
     }
 
-
     function getValue(el) {
         var options = $(el).data("options");
 
@@ -423,7 +441,8 @@
             var rowArray = [];
 
             cells.each(function(){
-                rowArray.push($(this).html());
+                var text = $("input", this).length > 0 ? $("input", this).val() : $(this).html();
+                rowArray.push(text);
             });
 
             tableArray.push(rowArray);
@@ -456,8 +475,8 @@
         var options = $(el).data("options");
 
         options.value.data = value.data;
-        options.colnames = value.colnames;
-        options.rownames = value.rownames;
+        options.value.colnames = value.colnames;
+        options.value.rownames = value.rownames;
         options.rows.n = value.data.length;
         options.cols.n = value.data[0].length;
 
@@ -476,6 +495,52 @@
         addBindings(el);
 
     };
+
+    function extendTable(el){
+        var options = $(el).data("options");
+        var updated = false;
+
+        var value = getValue(el);
+
+        var nrow = value.data.length;
+        var ncol = value.data[0].length;
+
+        if (options.rows.extend){
+            var delta = options.rows.delta;
+            var last = value.data[nrow - 1].join("").trim();
+
+            if (last != ""){
+                updated = true;
+                for (var i = nrow; i < nrow + delta - nrow % delta; i++){
+                    value.data[i] = [];
+                    for (var j = 0; j < ncol; j ++){
+                        value.data[i][j] = "";
+                    }
+                }
+            }
+        }
+        if (options.cols.extend){
+            var delta = options.cols.delta;
+
+            var lastCol = [];
+
+            for (var i = 0; i < nrow; i ++){
+                lastCol[i] = value.data[i][ncol - 1];
+            }
+            var last = lastCol.join("").trim();
+
+            if (last != ""){
+                updated = true;
+                for (var j = ncol; j < ncol + delta - ncol % delta; j++){
+                    for (var i = 0; i < nrow; i ++){
+                        value.data[i][j] = "";
+                    }
+                };
+            }
+        }
+
+        if (updated) setValue(el, value);
+    }
 
     function setDefault(options, fallback){
         if (typeof fallback == "object"){
@@ -530,23 +595,9 @@
 
         this.append(table);
 
+        extendTable(this);
+
         addBindings(this);
-
-        if (options.copy){
-            addCopyBinding(this);
-        }
-
-        if (options.paste){
-            addPasteBinding(this);
-        }
-
-        if (options.rows.editableNames){
-            addHeaderBinding(this, ".matrix-input-row-header-cell");
-        }
-
-        if (options.cols.editableNames){
-            addHeaderBinding(this, ".matrix-input-col-header-cell");
-        }
 
         return this;
     };

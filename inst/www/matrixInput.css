@@ -2,6 +2,10 @@
     table-layout: fixed;
 }
 
+.matrix-input-table td, .matrix-input-table th {
+    height: 43px;
+}
+
 .matrix-input-table input {
     width: 100%;
 }
