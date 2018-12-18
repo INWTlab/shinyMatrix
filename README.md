@@ -40,8 +40,8 @@ Parameter `rows` / `cols` take a list of arguments. The following is supported
 |`n`| number of rows (is calculated from `value` per default) |
 |`names`| show row/colnames (names are taken from `value`)|
 |`editableNames`| should row/colnames be editable? |
-|TODO `extend`| should rows/cols be automatically be added if table is filled to the last row / column? |
-|TODO `delta` | how many blank rows/cols should be added 
+| `extend`| should rows/cols be automatically be added if table is filled to the last row / column? |
+| `delta` | how many blank rows/cols should be added 
 |TODO `createHeader` | name of javascript function to override default function to create table header. The function needs to have the table element and the data object as argument
 |TODO `getNames` |name of javascript function to override default function to get names from the html table. The function needs to have the table element as argument |
 
@@ -87,6 +87,9 @@ startApplication("appCopy")
 ## Update Matrix Input from R
 startApplication("appUpdate")
 
-## Editable Rownames
+## Editable rownames
 startApplication("appRownames")
+
+## Extend Matrix Automatically
+startApplication("appExtend")
 ```
