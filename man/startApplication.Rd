@@ -7,6 +7,8 @@
 startApplication(app = "app", port = 4242)
 }
 \arguments{
+\item{app}{name of the folder in `inst`}
+
 \item{port}{port of web application}
 }
 \description{

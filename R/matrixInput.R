@@ -1,10 +1,15 @@
 #' Create a matrix input field
 #'
 #' @param inputId The input slot that will be used to access the value
-#' @param rows Number of rows
-#' @param cols Number of cols
-#' @param type class of matrix
-#'
+#' @param inputClass class of the matrix input html element
+#' @param value Inital value. Should be a matrix
+#' @param class Matrix will be coerced to a matrix of this class. `character` and `numeric`
+#' are supported
+#' @param rows list of options to configure rows
+#' @param cols list of options to configure cols
+#' @param paste enable paste functionality
+#' @param copy enable copy functionality
+#' 
 #' @export
 matrixInput <- function(inputId,
                         value = matrix("", 1, 1),

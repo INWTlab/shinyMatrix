@@ -336,8 +336,12 @@
 
     function addHeaderInputBindings(inputEl) {
         inputEl.on("blur", function(){
+            var el = $(inputEl).closest(".matrix-input");
+
             $(this).closest(".matrix-input").trigger("change");
             $(this).parent().html($(this).val());
+
+            extendTable(el);
         });
 
         inputEl.on("keydown", function(e){
@@ -493,8 +497,79 @@
         }
 
         addBindings(el);
-
     };
+
+    function emptyRows(data, rownames){
+        var empty = [];
+
+        for (var i = 0; i < data.length; i ++){
+            if (data[i].join("").trim() == "" &&
+                (rownames == undefined || rownames[i].trim() == "")){
+                empty.push(true);
+            } else {
+                empty.push(false);
+            }
+        }
+
+        return empty;
+    }
+
+    function emptyCols(data, colnames){
+        var empty = [];
+
+        for (var j = 0; j < data[0].length; j ++){
+            var col = [];
+
+            for (var i = 0; i < data.length; i ++){
+                col.push(data[i][j]);
+            }
+            var last = col.join("").trim();
+
+            if (last == "" &&
+                (colnames == undefined || colnames[j].trim() == "")){
+                empty.push(true);
+            } else {
+                empty.push(false);
+            }
+        }
+
+        return empty;
+    }
+
+    function endTrue (vec, delta){
+        var allTrue = true;
+
+        var n = vec.length;
+        var start = n - n % delta - 1 - delta; // look at 2 deltas at the end
+        for (var i = start; i < n; i++){
+            if (!vec[i]) allTrue = false;
+        }
+
+        return allTrue;
+    }
+
+    function popRows(value, delta){
+        var n = value.data.length;
+        var end = n - n % delta - 1;
+
+        value.data = value.data.slice(0, end);
+        value.rownames = value.rownames.slice(0, end);
+
+        return value;
+    }
+
+    function popCols(value, delta){
+        var n = value.data[0].length;
+        var end = n - n % delta - 1;
+
+        for (var i = 0; i < value.data.length; i++){
+            value.data[i] = value.data[i].slice(0, end);
+        }
+        value.colnames = value.colnames.slice(0, end);
+
+        return value;
+    }
+
 
     function extendTable(el){
         var options = $(el).data("options");
@@ -507,9 +582,19 @@
 
         if (options.rows.extend){
             var delta = options.rows.delta;
-            var last = value.data[nrow - 1].join("").trim();
 
-            if (last != ""){
+            var empty = emptyRows(value.data, value.rownames);
+            var emptyEnd = endTrue(empty, delta);
+
+            while (emptyEnd){
+                updated = true;
+                value = popRows(value, delta);
+
+                empty = emptyRows(value.data, value.rownames);
+                emptyEnd = endTrue(empty, delta);
+            }
+
+            if (!empty[empty.length - 1]){
                 updated = true;
                 for (var i = nrow; i < nrow + delta - nrow % delta; i++){
                     value.data[i] = [];
@@ -522,14 +607,18 @@
         if (options.cols.extend){
             var delta = options.cols.delta;
 
-            var lastCol = [];
+            var empty = emptyCols(value.data, value.colnames);
+            var emptyEnd = endTrue(empty, delta);
 
-            for (var i = 0; i < nrow; i ++){
-                lastCol[i] = value.data[i][ncol - 1];
+            while (emptyEnd){
+                updated = true;
+                value = popCols(value, delta);
+
+                empty = emptyCols(value.data, value.colnames);
+                emptyEnd = endTrue(empty, delta);
             }
-            var last = lastCol.join("").trim();
 
-            if (last != ""){
+            if (!empty[empty.length - 1]){
                 updated = true;
                 for (var j = ncol; j < ncol + delta - ncol % delta; j++){
                     for (var i = 0; i < nrow; i ++){

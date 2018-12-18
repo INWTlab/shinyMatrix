@@ -4,7 +4,7 @@
 \alias{updateMatrixInput}
 \title{Update matrix input}
 \usage{
-updateMatrixInput(session, inputId, value = NULL)
+updateMatrixInput(session, inputId, value)
 }
 \arguments{
 \item{session}{shiny session}

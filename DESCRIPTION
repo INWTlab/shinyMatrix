@@ -1,6 +1,6 @@
 Package: shinyMatrix
 Title: Shiny Matrix Input Field 
-Version: 0.0.2
+Version: 0.0.3
 Author: Andreas Neudecker
 Maintainer: <andreas.neudecker@inwt-statistics.de>
 Description: Implements a custom matrix input field. 
@@ -8,7 +8,8 @@ Depends: R (>= 3.5.1)
 License: closed 
 Encoding: UTF-8
 LazyData: true
-Imports: shiny
+Imports: shiny,
+  jsonlite
 Suggests: INWTUtils, lintr,
     testthat
 RoxygenNote: 6.1.0

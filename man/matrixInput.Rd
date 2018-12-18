@@ -11,11 +11,20 @@ matrixInput(inputId, value = matrix("", 1, 1), inputClass = "",
 \arguments{
 \item{inputId}{The input slot that will be used to access the value}
 
-\item{rows}{Number of rows}
+\item{value}{Inital value. Should be a matrix}
 
-\item{cols}{Number of cols}
+\item{inputClass}{class of the matrix input html element}
 
-\item{type}{class of matrix}
+\item{rows}{list of options to configure rows}
+
+\item{cols}{list of options to configure cols}
+
+\item{class}{Matrix will be coerced to a matrix of this class. `character` and `numeric`
+are supported}
+
+\item{paste}{enable paste functionality}
+
+\item{copy}{enable copy functionality}
 }
 \description{
 Create a matrix input field

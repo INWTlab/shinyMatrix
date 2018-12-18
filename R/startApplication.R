@@ -1,5 +1,6 @@
 #' Start Application
 #'
+#' @param app name of the folder in `inst`
 #' @param port port of web application
 #'
 #' @export
