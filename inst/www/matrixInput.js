@@ -1,4 +1,20 @@
-(function ( $ ) {
+// helper function
+function isEmpty(obj) {
+    if (obj == null) return true;
+
+    for(var key in obj) {
+        if(obj.hasOwnProperty(key))
+            return false;
+    }
+    return true;
+};
+
+
+
+(function (window, $) {
+    // public functions
+    window.shinyMatrix = {};
+
     function createTable(nrow, ncol, data) {
         var table = $("<table>");
         table.addClass("table table-bordered matrix-input-table");
@@ -70,19 +86,9 @@
         } else {
             return letter;
         }
-    }
+    };
 
-    function isEmpty(obj) {
-        if (obj == null) return true;
-
-        for(var key in obj) {
-            if(obj.hasOwnProperty(key))
-                return false;
-        }
-        return true;
-    }
-
-    function createColHeader(tableEl, value){
+    window.shinyMatrix.createColHeader = function createColHeader(tableEl, value){
         var colHeader = $("<tr>");
         colHeader.addClass("matrix-input-col-header");
 
@@ -96,9 +102,9 @@
         }
 
         tableEl.prepend(colHeader);
-    }
+    };
 
-    function updateColHeader(tableEl, value){
+    window.shinyMatrix.updateColHeader = function updateColHeader(tableEl, value){
         var colHeader = $(".matrix-input-col-header", tableEl);
         var addHeader = false;
 
@@ -129,9 +135,18 @@
         }
 
         if (addHeader) tableEl.prepend(colHeader);
-    }
+    };
 
-    function createRowHeader(tableEl, value){
+    window.shinyMatrix.getColHeader = function getColHeader(tableEl){
+        var colHeaderArray = [];
+        $(".matrix-input-col-header-cell", tableEl).each(function(){
+            colHeaderArray.push($(this).html());
+        });
+        return colHeaderArray;
+    };
+
+
+    window.shinyMatrix.createRowHeader = function createRowHeader(tableEl, value){
         $("tr", tableEl).prepend($("<th>"));
 
         var contentRows = $("tr", tableEl).find("td.matrix-input-cell:first").parent();
@@ -143,9 +158,9 @@
             th.text(text);
             th.addClass("matrix-input-row-header-cell");
         }
-    }
+    };
 
-    function updateRowHeader(tableEl, value){
+    window.shinyMatrix.updateRowHeader = function updateRowHeader(tableEl, value){
         // $("tr", tableEl).prepend($("<th>"));
 
         var contentRows = $("tr", tableEl).find("td.matrix-input-cell:first").parent();
@@ -164,7 +179,17 @@
             th.text(text);
             th.addClass("matrix-input-row-header-cell");
         }
-    }
+    };
+
+    window.shinyMatrix.getRowHeader = function getRowHeader(tableEl){
+        var rowHeaderArray = [];
+        $(".matrix-input-row-header-cell", tableEl).each(function(){
+            rowHeaderArray.push($(this).html());
+        });
+        return rowHeaderArray;
+    };
+
+
 
     function createInput(value){
         var inputEl = $("<input>");
@@ -455,19 +480,11 @@
         var result = {data: tableArray};
 
         if(options.cols.names){
-            var colHeaderArray = [];
-            $(".matrix-input-col-header-cell").each(function(){
-                colHeaderArray.push($(this).html());
-            });
-            result.colnames = colHeaderArray;
+            result.colnames = executeFunctionByName(options.cols.getHeader, window, $(".matrix-input-table", el));
         }
 
         if(options.rows.names){
-            var rowHeaderArray = [];
-            $(".matrix-input-row-header-cell").each(function(){
-                rowHeaderArray.push($(this).html());
-            });
-            result.rownames = rowHeaderArray;
+            result.rownames = executeFunctionByName(options.rows.getHeader, window, $(".matrix-input-table", el));
         }
 
         return result;
@@ -490,10 +507,10 @@
                     options.rows.n, options.cols.n, options.value.data);
 
         if (options.cols.names){
-            updateColHeader($(".matrix-input-table", el), options.value);
+            executeFunctionByName(options.cols.updateHeader, window, $(".matrix-input-table", el), options.value);
         }
         if (options.rows.names){
-            updateRowHeader($(".matrix-input-table", el), options.value);
+            executeFunctionByName(options.rows.updateHeader, window, $(".matrix-input-table", el), options.value);
         }
 
         addBindings(el);
@@ -642,6 +659,16 @@
         return (options === undefined) ? fallback : options;
     };
 
+    function executeFunctionByName(functionName, context /*, args */) {
+        var args = Array.prototype.slice.call(arguments, 2);
+        var namespaces = functionName.split(".");
+        var func = namespaces.pop();
+        for (var i = 0; i < namespaces.length; i++) {
+            context = context[namespaces[i]];
+        }
+        return context[func].apply(context, args);
+    };
+
     $.fn.matrix = function(options){
         // set default options
         options.rows = setDefault(options.rows, {
@@ -650,8 +677,9 @@
             editableNames: false,
             extend: false,
             delta: 1,
-            createHeader: "createRowHeader",
-            getNames: "getRowNames"
+            createHeader: "shinyMatrix.createRowHeader",
+            updateHeader: "shinyMatrix.updateRowHeader",
+            getHeader: "shinyMatrix.getRowHeader"
         });
 
         options.cols = setDefault(options.cols, {
@@ -660,8 +688,9 @@
             editableNames: false,
             extend: false,
             delta: 1,
-            createHeader: "createColHeader",
-            getNames: "getColNames"
+            createHeader: "shinyMatrix.createColHeader",
+            updateHeader: "shinyMatrix.updateColHeader",
+            getHeader: "shinyMatrix.getColHeader"
         });
 
         options.copy = setDefault(options.copy, false);
@@ -674,13 +703,12 @@
         var table = createTable(options.rows.n, options.cols.n, options.value.data);
 
         if (options.cols.names){
-            createColHeader(table, options.value);
+            executeFunctionByName(options.cols.createHeader, window, table, options.value);
         }
         if (options.rows.names){
-            createRowHeader(table, options.value);
+            executeFunctionByName(options.rows.createHeader, window, table, options.value);
         }
 
-        console.log(options);
 
         this.append(table);
 
@@ -700,7 +728,7 @@
 
         return this;
     };
-}(jQuery));
+}(window, jQuery));
 
 /* bindings for shiny */
 var matrixInputBinding = new Shiny.InputBinding();

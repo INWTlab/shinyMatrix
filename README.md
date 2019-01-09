@@ -42,8 +42,9 @@ Parameter `rows` / `cols` take a list of arguments. The following is supported
 |`editableNames`| should row/colnames be editable? |
 | `extend`| should rows/cols be automatically be added if table is filled to the last row / column? |
 | `delta` | how many blank rows/cols should be added 
-|TODO `createHeader` | name of javascript function to override default function to create table header. The function needs to have the table element and the data object as argument
-|TODO `getNames` |name of javascript function to override default function to get names from the html table. The function needs to have the table element as argument |
+| `createHeader` | name of javascript function to override default function to create table header. The function needs to have the table element and the data object as argument
+| `updateHeader` | name of javascript function to override default function to update table header. The function needs to have the table element and the data object as argument
+| `getHeader` | name of javascript function to override default function to get names from the html table. The function needs to have the table element as argument |
 
 Call the matrixInput function in your UI generating, e.g. ui.R
 
@@ -92,4 +93,7 @@ startApplication("appRownames")
 
 ## Extend Matrix Automatically
 startApplication("appExtend")
+
+## Custom Column Header 
+startApplication("appCustom")
 ```
