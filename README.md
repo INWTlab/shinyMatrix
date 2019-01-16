@@ -2,6 +2,8 @@
 
 This package provides an input field to enter matrix conveniently in a shiny application. It supports tabbing and jumping linewise in the matrix, copy-pasting from other spread sheets applications.
 
+![Screenshot Simple Matrix](https://github.com/INWTlab/shiny-matrix/raw/master/screenshot1.png)
+
 ## Usage
 
 ### UI
