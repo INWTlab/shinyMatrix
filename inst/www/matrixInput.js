@@ -566,25 +566,28 @@ function isEmpty(obj) {
     }
 
     function popRows(value, delta){
-        var n = value.data.length;
-        var end = n - n % delta - 1;
+        var newval = $.extend({}, value);
+        var n = newval.data.length;
+        var end = n - n % delta - delta;
 
-        value.data = value.data.slice(0, end);
-        value.rownames = value.rownames.slice(0, end);
+        newval.data = newval.data.slice(0, end);
+        newval.rownames = newval.rownames.slice(0, end);
 
-        return value;
+        return newval;
     }
 
     function popCols(value, delta){
-        var n = value.data[0].length;
-        var end = n - n % delta - 1;
+        var newval = $.extend({}, value);
 
-        for (var i = 0; i < value.data.length; i++){
-            value.data[i] = value.data[i].slice(0, end);
+        var n = newval.data[0].length;
+        var end = n - n % delta - delta;
+
+        for (var i = 0; i < newval.data.length; i++){
+            newval.data[i] = newval.data[i].slice(0, end);
         }
-        value.colnames = value.colnames.slice(0, end);
+        newval.colnames = newval.colnames.slice(0, end);
 
-        return value;
+        return newval;
     }
 
 

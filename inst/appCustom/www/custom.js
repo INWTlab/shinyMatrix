@@ -67,7 +67,7 @@ var myapp = {
                 }
             }
 
-            var addCelll = false;
+            var addCell = false;
 
             var th2 = $(".matrix-input-col-header-cell", colHeader2).eq(i);
 
