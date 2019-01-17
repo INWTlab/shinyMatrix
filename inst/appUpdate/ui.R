@@ -13,7 +13,8 @@ shiny::tagList(
         value = m,
         class = "numeric",
         cols = list(
-          names = TRUE
+          names = TRUE,
+          extend = TRUE
         ),
         rows = list(
           names = TRUE

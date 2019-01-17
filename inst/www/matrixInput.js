@@ -495,11 +495,15 @@ function isEmpty(obj) {
 
         var options = $(el).data("options");
 
-        options.value.data = value.data;
-        options.value.colnames = value.colnames;
-        options.value.rownames = value.rownames;
-        options.rows.n = value.data.length;
-        options.cols.n = value.data[0].length;
+        var tmp = extendData(value, options);
+
+        var extendedValue = (tmp === false ? value : tmp);
+
+        options.value.data = extendedValue.data;
+        options.value.colnames = extendedValue.colnames;
+        options.value.rownames = extendedValue.rownames;
+        options.rows.n = extendedValue.data.length;
+        options.cols.n = extendedValue.data[0].length;
 
         $(el).data("options", options);
 
@@ -521,7 +525,7 @@ function isEmpty(obj) {
 
         for (var i = 0; i < data.length; i ++){
             if (data[i].join("").trim() == "" &&
-                (rownames == undefined || rownames[i].trim() == "")){
+                (rownames === undefined || rownames[i] === undefined || rownames[i].trim() == "")){
                 empty.push(true);
             } else {
                 empty.push(false);
@@ -541,9 +545,8 @@ function isEmpty(obj) {
                 col.push(data[i][j]);
             }
             var last = col.join("").trim();
-
             if (last == "" &&
-                (colnames == undefined || colnames[j].trim() == "")){
+                (colnames === undefined || colnames[j] === undefined || colnames[j].trim() == "")){
                 empty.push(true);
             } else {
                 empty.push(false);
@@ -590,36 +593,33 @@ function isEmpty(obj) {
         return newval;
     }
 
-
-    function extendTable(el){
-        var options = $(el).data("options");
+    function extendData(value, options){
+        var newval = $.extend({}, value);
+        var nrow = newval.data.length;
+        var ncol = newval.data[0].length;
         var updated = false;
-
-        var value = getValue(el);
-
-        var nrow = value.data.length;
-        var ncol = value.data[0].length;
 
         if (options.rows.extend){
             var delta = options.rows.delta;
 
-            var empty = emptyRows(value.data, value.rownames);
+            var empty = emptyRows(newval.data, newval.rownames);
             var emptyEnd = endTrue(empty, delta);
 
             while (emptyEnd){
                 updated = true;
-                value = popRows(value, delta);
+                newval = popRows(newval, delta);
 
-                empty = emptyRows(value.data, value.rownames);
+                empty = emptyRows(newval.data, newval.rownames);
                 emptyEnd = endTrue(empty, delta);
             }
 
             if (!empty[empty.length - 1]){
                 updated = true;
                 for (var i = nrow; i < nrow + delta - nrow % delta; i++){
-                    value.data[i] = [];
+                    newval.data[i] = [];
+                    newval.rownames[i] = "";
                     for (var j = 0; j < ncol; j ++){
-                        value.data[i][j] = "";
+                        newval.data[i][j] = "";
                     }
                 }
             }
@@ -627,28 +627,40 @@ function isEmpty(obj) {
         if (options.cols.extend){
             var delta = options.cols.delta;
 
-            var empty = emptyCols(value.data, value.colnames);
+            var empty = emptyCols(newval.data, newval.colnames);
             var emptyEnd = endTrue(empty, delta);
 
             while (emptyEnd){
                 updated = true;
-                value = popCols(value, delta);
+                newval = popCols(newval, delta);
 
-                empty = emptyCols(value.data, value.colnames);
+                empty = emptyCols(newval.data, newval.colnames);
                 emptyEnd = endTrue(empty, delta);
             }
 
             if (!empty[empty.length - 1]){
                 updated = true;
                 for (var j = ncol; j < ncol + delta - ncol % delta; j++){
+                    newval.colnames[j] = "";
                     for (var i = 0; i < nrow; i ++){
-                        value.data[i][j] = "";
+                        newval.data[i][j] = "";
                     }
                 };
             }
         }
+        if (updated) return newval;
+        else return false;
+    }
 
-        if (updated) setValue(el, value);
+    function extendTable(el){
+        var options = $(el).data("options");
+        var updated = false;
+
+        var value = getValue(el);
+
+        var newval = extendData(value, options);
+
+        if (newval !== false) setValue(el, newval);
     }
 
     function setDefault(options, fallback){
