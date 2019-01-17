@@ -26,7 +26,7 @@ function isEmpty(obj) {
             for (var j = 0; j < ncol; j ++){
                 var td = $("<td>");
                 td.addClass("matrix-input-cell");
-                td.text(data[i][j]);
+                td.text(data[i][j] === null ? "" : data[i][j]);
                 tr.append(td);
             }
             table.append(tr);
@@ -57,7 +57,7 @@ function isEmpty(obj) {
                 }
 
                 td.addClass("matrix-input-cell");
-                td.text(data[i][j]);
+                td.text(data[i][j] === null ? "" : data[i][j]);
 
                 if (addCol) tr.append(td);
             }

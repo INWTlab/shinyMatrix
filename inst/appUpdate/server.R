@@ -9,6 +9,8 @@ function(input, output, session) {
 
     m <- matrix(round(rnorm(nrow * ncol), 2), nrow, ncol)
 
+    m[1, 1] <- NA
+
     colnames(m) <- sample(letters, ncol)
     rownames(m) <- sample(LETTERS, nrow)
 
