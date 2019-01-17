@@ -92,7 +92,7 @@ function isEmpty(obj) {
         var colHeader = $("<tr>");
         colHeader.addClass("matrix-input-col-header");
 
-        for (var i = 0; i < value.data[0].length; i ++){
+        for (var i = 0; i < (value.data.length > 0 ? value.data[0].length : 0); i ++){
             var text = (isEmpty(value.colnames) ? newColName(i) : value.colnames[i]);
             var th = $("<th>");
             th.text(text);
@@ -115,7 +115,7 @@ function isEmpty(obj) {
 
         colHeader.addClass("matrix-input-col-header");
 
-        for (var i = 0; i < value.data[0].length; i ++){
+        for (var i = 0; i < (value.data.length > 0 ? value.data[0].length : 0); i ++){
             var text = (isEmpty(value.colnames) ? newColName(i) : value.colnames[i]);
             var th = $(".matrix-input-col-header-cell", colHeader).eq(i);
             var addCell = false;
@@ -130,7 +130,7 @@ function isEmpty(obj) {
 
             if (addCell) colHeader.append(th);
         }
-        for (var i = colHeader.children().length - 1; i >= value.data[0].length; i --){
+        for (var i = colHeader.children().length - 1; i >= (value.data.length > 0 ? value.data[0].length : 0); i --){
             $(".matrix-input-col-header-cell", colHeader).eq(i).remove();
         }
 
@@ -149,7 +149,7 @@ function isEmpty(obj) {
     window.shinyMatrix.createRowHeader = function createRowHeader(tableEl, value){
         $("tr", tableEl).prepend($("<th>"));
 
-        var contentRows = $("tr", tableEl).find("td.matrix-input-cell:first").parent();
+        var contentRows = $("tr.matrix-input-row", tableEl);
 
         for (var i = 0; i < value.data.length; i ++) {
             var text = (isEmpty(value.rownames) ? (i + 1) : value.rownames[i]);
@@ -225,7 +225,7 @@ function isEmpty(obj) {
             for (var i = 0; i < data.length; i++){
                 var tr = $(".matrix-input-row", tableEl).eq(i);
 
-                for (var j = 0; j < data[0].length; j ++){
+                for (var j = 0; j < (data.length > 0 ? data[0].length : 0); j ++){
                     var td = $(".matrix-input-cell", tr).eq(j);
                     td.text(data[i][j]);
                     td.addClass("matrix-input-cell-pasted");
@@ -505,7 +505,7 @@ function isEmpty(obj) {
         options.value.colnames = extendedValue.colnames;
         options.value.rownames = extendedValue.rownames;
         options.rows.n = extendedValue.data.length;
-        options.cols.n = extendedValue.data[0].length;
+        options.cols.n = (extendedValue.data.length > 0 ? extendedValue.data[0].length : 0);
 
         $(el).data("options", options);
 
@@ -540,7 +540,7 @@ function isEmpty(obj) {
     function emptyCols(data, colnames){
         var empty = [];
 
-        for (var j = 0; j < data[0].length; j ++){
+        for (var j = 0; j < (data.length > 0 ? data[0].length : 0); j ++){
             var col = [];
 
             for (var i = 0; i < data.length; i ++){
@@ -584,7 +584,7 @@ function isEmpty(obj) {
     function popCols(value, delta){
         var newval = $.extend({}, value);
 
-        var n = newval.data[0].length;
+        var n = (newval.data.length > 0 ? newval.data[0].length : 0);
         var end = n - n % delta - delta;
 
         for (var i = 0; i < newval.data.length; i++){
@@ -598,7 +598,7 @@ function isEmpty(obj) {
     function extendData(value, options){
         var newval = $.extend({}, value);
         var nrow = newval.data.length;
-        var ncol = newval.data[0].length;
+        var ncol = (newval.data.length > 0 ? newval.data[0].length : 0);
         var updated = false;
 
         if (options.rows.extend){
@@ -661,7 +661,6 @@ function isEmpty(obj) {
 
     function extendTable(el){
         var options = $(el).data("options");
-        var updated = false;
 
         var value = getValue(el);
 
@@ -697,6 +696,22 @@ function isEmpty(obj) {
         var ncols = value.data.map(function(el){ return el.length; });
         var ncol = Math.max(Math.max.apply(null, ncols), value.colnames.length);
 
+        if (ncol == 0 && nrow == 0) value.data = [];
+
+        if (nrow == 0){
+            value.rownames = [];
+
+            value.data = [];
+        }
+
+        if (ncol == 0){
+            value.colnames = [];
+
+            for (var i = 0; i < nrow; i ++){
+                value.data[i] = [];
+            }
+        }
+
         for (var i = 0; i < nrow; i ++){
             if (value.data[i] === undefined) value.data[i] = [];
             if (value.rownames[i] === undefined) value.rownames[i] = "";
@@ -712,6 +727,9 @@ function isEmpty(obj) {
 
 
     $.fn.matrix = function(options){
+        // sanitize data
+        sanitizeValue(options.value);
+
         // set default options
         options.rows = setDefault(options.rows, {
             n: options.value.data.length,
@@ -725,7 +743,7 @@ function isEmpty(obj) {
         });
 
         options.cols = setDefault(options.cols, {
-            n: options.value.data[0].length,
+            n: (options.value.data.length > 0 ? options.value.data[0].length : 0),
             names: false,
             editableNames: false,
             extend: false,
