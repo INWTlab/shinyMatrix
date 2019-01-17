@@ -689,6 +689,26 @@ function isEmpty(obj) {
         return context[func].apply(context, args);
     };
 
+    function sanitizeValue(value){
+        var nrow = Math.max(value.data.length, value.rownames.length);
+
+        var ncols = value.data.map(function(el){ return el.length; });
+        var ncol = Math.max(Math.max.apply(null, ncols), value.colnames.length);
+
+        for (var i = 0; i < nrow; i ++){
+            if (value.data[i] === undefined) value.data[i] = [];
+            if (value.rownames[i] === undefined) value.rownames[i] = "";
+            for (var j = 0; j < ncol; j ++){
+                if (value.data[i][j] === undefined) value.data[i][j] = "";
+            }
+        }
+
+        for (var j = 0; j < ncol; j ++){
+            if (value.colnames[j] === undefined) value.colnames[j] = "";
+        }
+    }
+
+
     $.fn.matrix = function(options){
         // set default options
         options.rows = setDefault(options.rows, {
@@ -744,6 +764,10 @@ function isEmpty(obj) {
             return getValue(this);
         }
 
+        sanitizeValue(value);
+
+        console.log(value);
+
         setValue(this, value);
 
         return this;
@@ -798,7 +822,6 @@ $.extend(matrixInputBinding, {
 
     },
     receiveMessage: function(el, data) {
-       console.log(data);
        if (data.hasOwnProperty('value'))
          this.setValue(el, data.value);
 
