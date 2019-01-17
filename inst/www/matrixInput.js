@@ -639,6 +639,11 @@ function isEmpty(obj) {
             }
 
             if (!empty[empty.length - 1]){
+                for (var i = 0; i < nrow; i ++){
+                    if (newval.data[i] === undefined)
+                        newval.data[i] = [];
+                }
+
                 updated = true;
                 for (var j = ncol; j < ncol + delta - ncol % delta; j++){
                     newval.colnames[j] = "";
