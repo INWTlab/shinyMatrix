@@ -270,7 +270,7 @@ function isEmpty(obj) {
             var cell = $(this).closest("td");
             var tableEl = $(this).closest("table");
 
-            var currentRow = $(this).closest("tr").index("tr.matrix-input-row");
+            var currentRow = $("tr.matrix-input-row", tableEl).index($(this).closest("tr"));
             var currentCol = $("td.matrix-input-cell", cell.parent()).index(cell);
 
             if (e.keyCode == 13){
@@ -314,7 +314,7 @@ function isEmpty(obj) {
     function addBindings(el) {
         var options = $(el).data("options");
 
-        $("td.matrix-input-cell").off("click");
+        $("td.matrix-input-cell", el).off("click");
 
         $("td.matrix-input-cell", el).click(function(e){
             var inputEl = createInput($(this).text());
@@ -345,7 +345,7 @@ function isEmpty(obj) {
     };
 
     function addHeaderBinding(tableEl, selector) {
-        $(selector).off("dblclick");
+        $(selector, tableEl).off("dblclick");
 
         $(selector, tableEl).dblclick(function(e){
             var inputEl = createInput($(this).text());
