@@ -691,6 +691,9 @@ function isEmpty(obj) {
     };
 
     function sanitizeValue(value){
+        if (value.rownames == null) value.rownames = [];
+        if (value.colnames == null) value.colnames = [];
+
         var nrow = Math.max(value.data.length, value.rownames.length);
 
         var ncols = value.data.map(function(el){ return el.length; });
