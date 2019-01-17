@@ -499,6 +499,8 @@ function isEmpty(obj) {
 
         var extendedValue = (tmp === false ? value : tmp);
 
+        sanitizeValue(extendedValue);
+
         options.value.data = extendedValue.data;
         options.value.colnames = extendedValue.colnames;
         options.value.rownames = extendedValue.rownames;
