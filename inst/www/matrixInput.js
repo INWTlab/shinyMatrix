@@ -694,6 +694,9 @@ function isEmpty(obj) {
         if (value.rownames == null) value.rownames = [];
         if (value.colnames == null) value.colnames = [];
 
+        if (typeof value.rownames === 'string') value.rownames = [value.rownames];
+        if (typeof value.colnames === 'string') value.colnames = [value.colnames];
+
         var nrow = Math.max(value.data.length, value.rownames.length);
 
         var ncols = value.data.map(function(el){ return el.length; });

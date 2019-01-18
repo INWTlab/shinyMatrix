@@ -12,7 +12,7 @@ function(input, output, session) {
     m[1, 1] <- NA
 
     colnames(m) <- sample(letters, ncol)
-    rownames(m) <- sample(LETTERS, nrow)
+    rownames(m) <- paste(sample(LETTERS, nrow), 1:nrow)
 
     updateMatrixInput(session, "matrix", m)
   })
