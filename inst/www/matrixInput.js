@@ -98,7 +98,7 @@ function isEmpty(obj) {
         console.log(ncol);
 
         for (var i = 0; i < ncol; i ++){
-            var text = (isEmpty(value.colnames) ? newColName(i) : value.colnames[i]);
+            var text = (isEmpty(value.colnames) ? "" : value.colnames[i]);
             var th = $("<th>");
             th.text(text);
             th.addClass("matrix-input-col-header-cell");
@@ -125,7 +125,7 @@ function isEmpty(obj) {
 
         console.log(ncol);
         for (var i = 0; i < ncol; i ++){
-            var text = (isEmpty(value.colnames) ? newColName(i) : value.colnames[i]);
+            var text = (isEmpty(value.colnames) ? "" : value.colnames[i]);
             var th = $(".matrix-input-col-header-cell", colHeader).eq(i);
             var addCell = false;
 
@@ -161,7 +161,7 @@ function isEmpty(obj) {
         var contentRows = $("tr.matrix-input-row", tableEl);
 
         for (var i = 0; i < value.data.length; i ++) {
-            var text = (isEmpty(value.rownames) ? (i + 1) : value.rownames[i]);
+            var text = (isEmpty(value.rownames) ? "" : value.rownames[i]);
 
             var th = contentRows.eq(i).children().eq(0);
             th.text(text);
@@ -175,7 +175,7 @@ function isEmpty(obj) {
         var contentRows = $("tr", tableEl).find("td.matrix-input-cell:first").parent();
 
         for (var i = 0; i < value.data.length; i ++) {
-            var text = (isEmpty(value.rownames) ? (i + 1) : value.rownames[i]);
+            var text = (isEmpty(value.rownames) ? "" : value.rownames[i]);
 
             var row = contentRows.eq(i);
 
