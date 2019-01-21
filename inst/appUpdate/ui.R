@@ -19,7 +19,12 @@ shiny::tagList(
         rows = list(
           names = TRUE
         )
-      )),
+      ),
+      div("Colnames:"),
+      textOutput("colnames"),
+      div("Rownames:"),
+      textOutput("rownames")
+      ),
       column(
         6,
         actionButton("button", "Update Matrix"),

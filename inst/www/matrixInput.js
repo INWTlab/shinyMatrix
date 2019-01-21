@@ -92,7 +92,12 @@ function isEmpty(obj) {
         var colHeader = $("<tr>");
         colHeader.addClass("matrix-input-col-header");
 
-        for (var i = 0; i < (value.data.length > 0 ? value.data[0].length : 0); i ++){
+        var ncol = (value.data.length > 0 ? value.data[0].length :
+                    (value.colnames !== undefined ? value.colnames.length : 0));
+
+        console.log(ncol);
+
+        for (var i = 0; i < ncol; i ++){
             var text = (isEmpty(value.colnames) ? newColName(i) : value.colnames[i]);
             var th = $("<th>");
             th.text(text);
@@ -115,7 +120,11 @@ function isEmpty(obj) {
 
         colHeader.addClass("matrix-input-col-header");
 
-        for (var i = 0; i < (value.data.length > 0 ? value.data[0].length : 0); i ++){
+        var ncol = (value.data.length > 0 ? value.data[0].length :
+                    (value.colnames !== undefined ? value.colnames.length : 0));
+
+        console.log(ncol);
+        for (var i = 0; i < ncol; i ++){
             var text = (isEmpty(value.colnames) ? newColName(i) : value.colnames[i]);
             var th = $(".matrix-input-col-header-cell", colHeader).eq(i);
             var addCell = false;
@@ -130,7 +139,7 @@ function isEmpty(obj) {
 
             if (addCell) colHeader.append(th);
         }
-        for (var i = colHeader.children().length - 1; i >= (value.data.length > 0 ? value.data[0].length : 0); i --){
+        for (var i = colHeader.children().length - 1; i >= ncol; i --){
             $(".matrix-input-col-header-cell", colHeader).eq(i).remove();
         }
 
@@ -540,7 +549,10 @@ function isEmpty(obj) {
     function emptyCols(data, colnames){
         var empty = [];
 
-        for (var j = 0; j < (data.length > 0 ? data[0].length : 0); j ++){
+        var ncol = (data.length > 0 ? data[0].length :
+                    (colnames !== undefined ? colnames.length : 0));
+
+        for (var j = 0; j < ncol; j ++){
             var col = [];
 
             for (var i = 0; i < data.length; i ++){
@@ -598,7 +610,9 @@ function isEmpty(obj) {
     function extendData(value, options){
         var newval = $.extend({}, value);
         var nrow = newval.data.length;
-        var ncol = (newval.data.length > 0 ? newval.data[0].length : 0);
+
+        var ncol = (newval.data.length > 0 ? newval.data[0].length :
+                    (newval.colnames !== undefined ? newval.colnames.length : 0));
         var updated = false;
 
         if (options.rows.extend){

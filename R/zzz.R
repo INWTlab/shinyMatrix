@@ -4,23 +4,11 @@
   )
 
   shiny::registerInputHandler("shinyMatrix.matrixNumeric", function(x, shinysession, name){
-    m <- do.call("rbind", lapply(x$data, function(row) suppressWarnings(as.numeric(unlist(row)))))
-    if (is.null(m)) m <- matrix(NA_integer_)
-
-    if (!is.null(x$colnames)) colnames(m) <- x$colnames
-    if (!is.null(x$rownames)) rownames(m) <- x$rownames
-
-    m
+    jsonToMatrix(x, as.numeric)
   })
 
   shiny::registerInputHandler("shinyMatrix.matrixCharacter", function(x, shinysession, name){
-    m <- do.call("rbind", lapply(x$data, function(row) as.character(unlist(row))))
-    if (is.null(m)) m <- matrix(NA_character_)
-
-    if (!is.null(x$colnames)) colnames(m) <- x$colnames
-    if (!is.null(x$rownames)) rownames(m) <- x$rownames
-
-    m
+    jsonToMatrix(x, as.character)
   })
 
 }
