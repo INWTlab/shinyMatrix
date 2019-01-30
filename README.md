@@ -8,6 +8,17 @@ This package provides an input field to enter matrix conveniently in a shiny app
 
 ![Screenshot Simple Matrix](https://github.com/INWTlab/shiny-matrix/raw/master/screenshot1.png)
 
+## Installation
+From CRAN:
+```r
+install.packages("shinyMatrix")
+```
+From GitHub:
+
+```r
+if (require("devtools")) install_github("INWTlab/shinyMatrix")
+```
+
 ## Usage
 
 ### UI
