@@ -27,5 +27,35 @@ are supported}
 \item{copy}{enable copy functionality}
 }
 \description{
-Create a matrix input field
+Use this function to create a matrix input field. Typically this would be in the `ui.R` file
+of your shiny application. You can access the input via the `input$inputId` in the server
+function of the shiny application. The value will always be a matrix and contain values of
+class `class`.
+}
+\details{
+The parameters `rows` and `cols` take a list of arguments. Currently, the following arguments
+are supported:
+
+\describe{
+  \item{n}{number of rows (is calculated from value as default)}
+  \item{names}{should row/colnames be displayed? The names are taken from value}
+  \item{editableNames}{should row/colnames be editable}
+  \item{extend}{Should the matrix be extended if data is entered in the last row/column?}
+  \item{delta}{how many blank rows/cols should be added?}
+  \item{createHeader, updateHeader}{name of javascript function to override
+default function to create/update table header. The function needs to
+have the table element and the data object as argument}
+  \item{getHeader}{same as createHeader but with table element as only argument}
+}
+}
+\examples{
+matrixInput(
+  "myMatrix",
+  value = diag(3),
+  rows = list(names = FALSE),
+  cols = list(names = FALSE),
+  copy = TRUE,
+  paste = TRUE
+)
+
 }

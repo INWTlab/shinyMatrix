@@ -11,5 +11,6 @@ LazyData: true
 Imports: shiny,
   jsonlite
 Suggests: INWTUtils, lintr,
-    testthat
+    testthat,
+    covr
 RoxygenNote: 6.1.0

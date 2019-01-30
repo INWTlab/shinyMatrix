@@ -14,5 +14,12 @@ updateMatrixInput(session, inputId, value)
 \item{value}{new value for matrix}
 }
 \description{
-Update matrix input
+This function updates the matrix input from R created with `matrixInput`.
+It works like the other updateXXXInput functions in shiny.
+}
+\examples{
+\dontrun{
+updateMatrixInput(session, "myMatrix", diag(4))
+}
+
 }

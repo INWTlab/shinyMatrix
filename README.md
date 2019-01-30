@@ -1,3 +1,7 @@
+[![Travis-CI Build Status](https://travis-ci.org/INWTlab/shiny-matrix.svg?branch=master)](https://travis-ci.org/INWTlab/shiny-matrix)
+[![Coverage Status](https://img.shields.io/codecov/c/github/INWTlab/shiny-matrix/master.svg)](https://codecov.io/github/INWTlab/shiny-matrix?branch=master)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/shinyMatrix)](https://cran.r-project.org/package=shinyMatrix)
+
 # Matrix Input for Shiny
 
 This package provides an input field to enter matrix conveniently in a shiny application. It supports tabbing and jumping linewise in the matrix, copy-pasting from other spread sheets applications.

@@ -12,5 +12,9 @@ startApplication(app = "app", port = 4242)
 \item{port}{port of web application}
 }
 \description{
-Start Application
+This function starts an example app from the folder `inst`.
+}
+\examples{
+startApplication("appCopy")
+
 }
