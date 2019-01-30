@@ -6,3 +6,4 @@
 ^screenshot1.png$
 ^\.travis\.yml$
 ^codecov\.yml$
+^\.covrignore$
