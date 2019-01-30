@@ -62,3 +62,21 @@ test_that("coercion", {
   expect_equal(jsonToMatrix(x), matrix(as.character(1:6), 2, 3, byrow = TRUE))
   expect_equal(jsonToMatrix(x, as.numeric), matrix(1:6, 2, 3, byrow = TRUE))
 })
+
+
+test_that("matrix with data and names", {
+  x <- list(
+    data = list(
+      list(1, 3),
+      list(2, 4)
+    ),
+    colnames = letters[1:2],
+    rownames = 1:2
+  )
+  m <- matrix(1:4, 2, 2)
+  colnames(m) <- letters[1:2]
+  rownames(m) <- 1:2
+
+  expect_equal(jsonToMatrix(x, as.numeric), m)
+
+})
