@@ -15,6 +15,8 @@ startApplication(app = "app", port = 4242)
 This function starts an example app from the folder `inst`.
 }
 \examples{
+\dontrun{
 startApplication("appCopy")
+}
 
 }

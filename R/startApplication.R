@@ -6,7 +6,9 @@
 #' @param port port of web application
 #'
 #' @examples
+#' \dontrun{
 #' startApplication("appCopy")
+#' }
 #'
 #' @export
 startApplication <- function(app = "app", port = 4242) {
