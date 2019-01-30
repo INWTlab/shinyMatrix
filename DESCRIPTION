@@ -4,8 +4,8 @@ Version: 0.0.16
 Author: Andreas Neudecker
 Maintainer: <andreas.neudecker@inwt-statistics.de>
 Description: Implements a custom matrix input field. 
-Depends: R (>= 3.5.1)
-License: closed 
+Depends: R (>= 3.5)
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports: shiny,

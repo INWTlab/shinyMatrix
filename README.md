@@ -78,6 +78,9 @@ updateMatrixInput(session, inputId, value = NULL)
 `value` is the data object. In the future there should be also support to update the other parameters.
 
 ## Example Apps
+
+You find the code for the example app in `inst/appXXX`.
+
 ```r
 library(shinyMatrix)
 

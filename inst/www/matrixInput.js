@@ -1,4 +1,3 @@
-// helper function
 function isEmpty(obj) {
     if (obj == null) return true;
 
@@ -12,7 +11,6 @@ function isEmpty(obj) {
 
 
 (function (window, $) {
-    // public functions
     window.shinyMatrix = {};
 
     function createTable(nrow, ncol, data) {
@@ -264,6 +262,13 @@ function isEmpty(obj) {
         });
 
         inputEl.on("keydown", function(e){
+            var nextRow,
+                nextCell,
+                currentRow,
+                currentCell,
+                cell,
+                tableEl;
+
             if (e.keyCode == 16){
                 shift = true;
             }
@@ -276,39 +281,39 @@ function isEmpty(obj) {
                 e.keyCode = - e.keyCode;
             }
 
-            var cell = $(this).closest("td");
-            var tableEl = $(this).closest("table");
+            cell = $(this).closest("td");
+            tableEl = $(this).closest("table");
 
-            var currentRow = $("tr.matrix-input-row", tableEl).index($(this).closest("tr"));
-            var currentCol = $("td.matrix-input-cell", cell.parent()).index(cell);
+            currentRow = $("tr.matrix-input-row", tableEl).index($(this).closest("tr"));
+            currentCol = $("td.matrix-input-cell", cell.parent()).index(cell);
 
             if (e.keyCode == 13){
-                var nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow + 1);
-                var nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol);
+                nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow + 1);
+                nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol);
             }
 
             if (e.keyCode == 9){
-                var nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow);
-                var nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol + 1);
+                nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow);
+                nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol + 1);
             }
 
             if (e.keyCode == -13){
                 if (currentRow > 0){
-                    var nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow - 1);
-                    var nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol);
+                    nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow - 1);
+                    nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol);
                 } else {
-                    var nextCell = [];
+                    nextCell = [];
 
                 }
             }
 
             if (e.keyCode == -9){
-                var nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow);
+                nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow);
 
                 if (currentCol > 0){
-                    var nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol - 1);
+                    nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol - 1);
                 } else {
-                    var nextCell = [];
+                    nextCell = [];
                 }
             }
 
@@ -327,6 +332,7 @@ function isEmpty(obj) {
 
         $("td.matrix-input-cell", el).click(function(e){
             var inputEl = createInput($(this).text());
+
             inputEl.select();
             addInputBindings(inputEl);
 
@@ -358,6 +364,7 @@ function isEmpty(obj) {
 
         $(selector, tableEl).dblclick(function(e){
             var inputEl = createInput($(this).text());
+
             inputEl.select();
             addHeaderInputBindings(inputEl);
 
@@ -392,6 +399,7 @@ function isEmpty(obj) {
         $("td.matrix-input-cell", el).on("mousedown", function(e){
             var cell = $(this);
             var row = cell.parent();
+
             selectStart = {
                 col: $(".matrix-input-cell", row).index(cell),
                 row: $(".matrix-input-row", row.parent()).index(row)
@@ -453,16 +461,20 @@ function isEmpty(obj) {
 
                 var rowArray = [];
 
-                cells.each(function(){rowArray.push($(this).html())});
+                cells.each(function(){
+                    rowArray.push($(this).html());
+                });
 
                 tableArray.push(rowArray.join("\t"));
+
+                return true;
             });
 
             var content = tableArray.join("\n");
 
             clipboardData.setData('text/plain', content);
             e.preventDefault();
-        })
+        });
 
     }
 
@@ -484,6 +496,8 @@ function isEmpty(obj) {
             });
 
             tableArray.push(rowArray);
+
+            return true;
         });
 
         var result = {data: tableArray};
@@ -547,18 +561,18 @@ function isEmpty(obj) {
     }
 
     function emptyCols(data, colnames){
-        var empty = [];
+        var empty = [],
+            ncol = (data.length > 0 ? data[0].length :
+                    (colnames !== undefined ? colnames.length : 0)),
+            col, i, j, last;
 
-        var ncol = (data.length > 0 ? data[0].length :
-                    (colnames !== undefined ? colnames.length : 0));
+        for (j = 0; j < ncol; j ++){
+            col = [];
 
-        for (var j = 0; j < ncol; j ++){
-            var col = [];
-
-            for (var i = 0; i < data.length; i ++){
+            for (i = 0; i < data.length; i ++){
                 col.push(data[i][j]);
             }
-            var last = col.join("").trim();
+            last = col.join("").trim();
             if (last == "" &&
                 (colnames === undefined || colnames[j] === undefined || colnames[j].trim() == "")){
                 empty.push(true);
@@ -608,18 +622,18 @@ function isEmpty(obj) {
     }
 
     function extendData(value, options){
-        var newval = $.extend({}, value);
-        var nrow = newval.data.length;
-
-        var ncol = (newval.data.length > 0 ? newval.data[0].length :
-                    (newval.colnames !== undefined ? newval.colnames.length : 0));
-        var updated = false;
+        var newval = $.extend({}, value),
+            nrow = newval.data.length,
+            ncol = (newval.data.length > 0 ? newval.data[0].length :
+                    (newval.colnames !== undefined ? newval.colnames.length : 0)),
+            updated = false,
+            delta, empty, emptyEnd, i, j;
 
         if (options.rows.extend){
-            var delta = options.rows.delta;
+            delta = options.rows.delta;
 
-            var empty = emptyRows(newval.data, newval.rownames);
-            var emptyEnd = endTrue(empty, delta);
+            empty = emptyRows(newval.data, newval.rownames);
+            emptyEnd = endTrue(empty, delta);
 
             while (emptyEnd){
                 updated = true;
@@ -631,20 +645,20 @@ function isEmpty(obj) {
 
             if (!empty[empty.length - 1]){
                 updated = true;
-                for (var i = nrow; i < nrow + delta - nrow % delta; i++){
+                for (i = nrow; i < nrow + delta - nrow % delta; i++){
                     newval.data[i] = [];
                     newval.rownames[i] = "";
-                    for (var j = 0; j < ncol; j ++){
+                    for (j = 0; j < ncol; j ++){
                         newval.data[i][j] = "";
                     }
                 }
             }
         }
         if (options.cols.extend){
-            var delta = options.cols.delta;
+            delta = options.cols.delta;
 
-            var empty = emptyCols(newval.data, newval.colnames);
-            var emptyEnd = endTrue(empty, delta);
+            empty = emptyCols(newval.data, newval.colnames);
+            emptyEnd = endTrue(empty, delta);
 
             while (emptyEnd){
                 updated = true;
@@ -655,15 +669,15 @@ function isEmpty(obj) {
             }
 
             if (!empty[empty.length - 1]){
-                for (var i = 0; i < nrow; i ++){
+                for (i = 0; i < nrow; i ++){
                     if (newval.data[i] === undefined)
                         newval.data[i] = [];
                 }
 
                 updated = true;
-                for (var j = ncol; j < ncol + delta - ncol % delta; j++){
+                for (j = ncol; j < ncol + delta - ncol % delta; j++){
                     newval.colnames[j] = "";
-                    for (var i = 0; i < nrow; i ++){
+                    for (i = 0; i < nrow; i ++){
                         newval.data[i][j] = "";
                     }
                 };
@@ -705,16 +719,22 @@ function isEmpty(obj) {
     };
 
     function sanitizeValue(value){
+        var nrow,
+            ncols,
+            ncol,
+            i,
+            j;
+
         if (value.rownames == null) value.rownames = [];
         if (value.colnames == null) value.colnames = [];
 
         if (typeof value.rownames === 'string') value.rownames = [value.rownames];
         if (typeof value.colnames === 'string') value.colnames = [value.colnames];
 
-        var nrow = Math.max(value.data.length, value.rownames.length);
+        nrow = Math.max(value.data.length, value.rownames.length);
 
-        var ncols = value.data.map(function(el){ return el.length; });
-        var ncol = Math.max(Math.max.apply(null, ncols), value.colnames.length);
+        ncols = value.data.map(function(el){ return el.length; });
+        ncol = Math.max(Math.max.apply(null, ncols), value.colnames.length);
 
         if (ncol == 0 && nrow == 0) value.data = [];
 
@@ -727,30 +747,28 @@ function isEmpty(obj) {
         if (ncol == 0){
             value.colnames = [];
 
-            for (var i = 0; i < nrow; i ++){
+            for (i = 0; i < nrow; i ++){
                 value.data[i] = [];
             }
         }
 
-        for (var i = 0; i < nrow; i ++){
+        for (i = 0; i < nrow; i ++){
             if (value.data[i] === undefined) value.data[i] = [];
             if (value.rownames[i] === undefined) value.rownames[i] = "";
-            for (var j = 0; j < ncol; j ++){
+            for (j = 0; j < ncol; j ++){
                 if (value.data[i][j] === undefined) value.data[i][j] = "";
             }
         }
 
-        for (var j = 0; j < ncol; j ++){
+        for (j = 0; j < ncol; j ++){
             if (value.colnames[j] === undefined) value.colnames[j] = "";
         }
     }
 
 
     $.fn.matrix = function(options){
-        // sanitize data
         sanitizeValue(options.value);
 
-        // set default options
         options.rows = setDefault(options.rows, {
             n: options.value.data.length,
             names: false,
@@ -867,19 +885,6 @@ $.extend(matrixInputBinding, {
 
        $(el).trigger('change');
     }
-    // getState: function(el) {
-    //   return {
-    //     label: $(el).parent().find('label[for="' + $escape(el.id) + '"]').matrix(),
-    //     value: el.value,
-    //     placeholder: el.placeholder
-    //   };
-    // },
-    // getRatePolicy: function() {
-    //   return {
-    //     policy: 'debounce',
-    //     delay: 250
-    //   };
-    // }
 });
 Shiny.inputBindings.register(matrixInputBinding, 'shiny.matrixInput');
 
