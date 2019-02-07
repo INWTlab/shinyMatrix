@@ -219,7 +219,7 @@ function isEmpty(obj) {
                 $(this).removeClass("matrix-input-cell-pasted");
                 void this.offsetWidth;
             });
-            $("input", tableEl).blur();
+            $("input", tableEl).trigger("updateInput");
 
             var clipboardData = e.clipboardData ||
                 window.clipboardData ||
@@ -247,6 +247,10 @@ function isEmpty(obj) {
 
     function addInputBindings(inputEl) {
         inputEl.on("blur", function(){
+            $(this).trigger("updateInput");
+        });
+
+        inputEl.on("updateInput", function(){
             var el = $(this).closest(".matrix-input");
 
             $(this).closest(".matrix-input").trigger("change");
@@ -319,7 +323,7 @@ function isEmpty(obj) {
 
             if (nextCell.length > 0){
                 $(nextCell).click();
-                $(this).blur();
+                $(this).trigger("inputChange");
             }
             e.preventDefault();
         });
@@ -446,7 +450,7 @@ function isEmpty(obj) {
         $(document).on("copy", function(e){
             if ($("td.matrix-input-cell-selected", el).length == 0) return;
 
-            $("input", el).blur();
+            $("input", el).trigger("inputChange");
 
             var clipboardData = e.clipboardData ||
                 window.clipboardData ||
@@ -514,7 +518,7 @@ function isEmpty(obj) {
     };
 
     function setValue(el, value) {
-        $("input", el).blur();
+        $("input", el).trigger("updateInput");
 
         var options = $(el).data("options");
 
