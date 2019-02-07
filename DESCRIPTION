@@ -1,8 +1,8 @@
 Package: shinyMatrix
 Title: Shiny Matrix Input Field 
-Version: 0.1
+Version: 0.1.0
 Author: Andreas Neudecker
-Maintainer: <andreas.neudecker@inwt-statistics.de>
+Maintainer: Andreas Neudecker <andreas.neudecker@inwt-statistics.de>
 Description: Implements a custom matrix input field. 
 Depends: R (>= 3.5)
 License: MIT + file LICENSE
