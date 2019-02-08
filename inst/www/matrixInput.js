@@ -323,7 +323,7 @@ function isEmpty(obj) {
 
             if (nextCell.length > 0){
                 $(nextCell).click();
-                $(this).trigger("inputChange");
+                $(this).trigger("updateInput");
             }
             e.preventDefault();
         });
@@ -381,6 +381,10 @@ function isEmpty(obj) {
 
     function addHeaderInputBindings(inputEl) {
         inputEl.on("blur", function(){
+            $(this).trigger("updateInput");
+        });
+
+        inputEl.on("updateInput", function(){
             var el = $(inputEl).closest(".matrix-input");
 
             $(this).closest(".matrix-input").trigger("change");
@@ -391,7 +395,7 @@ function isEmpty(obj) {
 
         inputEl.on("keydown", function(e){
             if (e.keyCode == 13){
-                $(this).blur();
+                $(this).trigger("updateInput");
                 e.preventDefault();
             }
         });
@@ -450,7 +454,7 @@ function isEmpty(obj) {
         $(document).on("copy", function(e){
             if ($("td.matrix-input-cell-selected", el).length == 0) return;
 
-            $("input", el).trigger("inputChange");
+            $("input", el).trigger("updateInput");
 
             var clipboardData = e.clipboardData ||
                 window.clipboardData ||
