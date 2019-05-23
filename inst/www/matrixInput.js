@@ -655,7 +655,8 @@ function isEmpty(obj) {
                 updated = true;
                 for (i = nrow; i < nrow + delta - nrow % delta; i++){
                     newval.data[i] = [];
-                    newval.rownames[i] = "";
+                    if (newval.rownames)
+                        newval.rownames[i] = "";
                     for (j = 0; j < ncol; j ++){
                         newval.data[i][j] = "";
                     }
@@ -684,7 +685,8 @@ function isEmpty(obj) {
 
                 updated = true;
                 for (j = ncol; j < ncol + delta - ncol % delta; j++){
-                    newval.colnames[j] = "";
+                    if (newval.colnames)
+                        newval.colnames[j] = "";
                     for (i = 0; i < nrow; i ++){
                         newval.data[i][j] = "";
                     }
