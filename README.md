@@ -20,7 +20,7 @@ install.packages("shinyMatrix")
 From GitHub:
 
 ```r
-if (require("devtools")) install_github("INWTlab/shinyMatrix")
+if (require("devtools")) install_github("INWTlab/shiny-matrix")
 ```
 
 ## Usage
