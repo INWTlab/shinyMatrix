@@ -364,9 +364,9 @@ function isEmpty(obj) {
     };
 
     function addHeaderBinding(tableEl, selector) {
-        $(selector, tableEl).off("dblclick");
+        $(selector, tableEl).off("click");
 
-        $(selector, tableEl).dblclick(function(e){
+        $(selector, tableEl).click(function(e){
             var inputEl = createInput($(this).text());
 
             inputEl.select();
