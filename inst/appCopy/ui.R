@@ -16,7 +16,8 @@ shiny::tagList(
         names = TRUE
       ),
       copy = TRUE,
-      paste = TRUE
+      paste = TRUE,
+      copyDoubleClick = TRUE
     ),
     textAreaInput("text", "Textarea", width = 400, height = 200)
   )
