@@ -334,20 +334,49 @@ function isEmpty(obj) {
 
         $("td.matrix-input-cell", el).off("click");
 
-        $("td.matrix-input-cell", el).click(function(e){
-            var inputEl = createInput($(this).text());
+        var tt, clicks = 0, delay = 300;
 
-            inputEl.select();
-            addInputBindings(inputEl);
+        $("td.matrix-input-cell", el).click(function(e) {
+            var content = $(this).text();
+            var target = $(this);
 
-            $(this).html("");
-            $(this).append(inputEl);
+            clicks ++;
 
-            inputEl.focus();
+            if (clicks == 1) {
+                tt = setTimeout(
+                    function(e){
+                        var inputEl = createInput(content);
+
+                        inputEl.select();
+                        addInputBindings(inputEl);
+
+                        target.html("");
+                        target.append(inputEl);
+
+                        inputEl.focus();
+
+                        clicks = 0;
+                    },
+                    delay
+                );
+            } else {
+                clearTimeout(tt);
+                clicks = 0;
+            }
         });
 
         if (options.copy){
             addCopyBinding(el);
+        }
+
+        if (options.copydoubleclick){
+            $("td.matrix-input-cell", el).dblclick(function(e) {
+                copyToClipboard($(this).text());
+
+                if(tt) clearTimeout(tt);
+            });
+        } else {
+            delay = 0;
         }
 
         if (options.paste){
@@ -362,6 +391,15 @@ function isEmpty(obj) {
             addHeaderBinding(el, ".matrix-input-col-header-cell");
         }
     };
+
+    function copyToClipboard(content) {
+        var tmp = $("<textarea>");
+        $("body").append(tmp);
+        tmp.text(content);
+        tmp.select();
+        document.execCommand("copy");
+        tmp.remove();
+    }
 
     function addHeaderBinding(tableEl, selector) {
         $(selector, tableEl).off("click");
@@ -802,6 +840,7 @@ function isEmpty(obj) {
         });
 
         options.copy = setDefault(options.copy, false);
+        options.copydoubleclick = setDefault(options.copydoubleclick, false);
         options.paste = setDefault(options.paste, false);
 
         this.data("options", options);
@@ -858,7 +897,8 @@ $.extend(matrixInputBinding, {
                 colnames: $(el).data("colnames")
             },
             copy: $(el).data("copy"),
-            paste: $(el).data("paste")
+            paste: $(el).data("paste"),
+            copydoubleclick: $(el).data("copydoubleclick")
         });
     },
     getId: function(el) {

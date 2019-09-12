@@ -6,7 +6,7 @@
 \usage{
 matrixInput(inputId, value = matrix("", 1, 1), inputClass = "",
   rows = list(), cols = list(), class = "character", paste = FALSE,
-  copy = FALSE)
+  copy = FALSE, copyDoubleClick = FALSE)
 }
 \arguments{
 \item{inputId}{The input slot that will be used to access the value}
@@ -25,6 +25,8 @@ are supported}
 \item{paste}{enable paste functionality}
 
 \item{copy}{enable copy functionality}
+
+\item{copyDoubleClick}{enable functionality to copy cell on double click}
 }
 \description{
 Use this function to create a matrix input field. Typically this would be in the `ui.R` file

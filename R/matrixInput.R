@@ -29,6 +29,7 @@
 #' @param cols list of options to configure cols
 #' @param paste enable paste functionality
 #' @param copy enable copy functionality
+#' @param copyDoubleClick enable functionality to copy cell on double click
 #'
 #' @examples
 #' matrixInput(
@@ -48,7 +49,8 @@ matrixInput <- function(inputId,
                         cols = list(),
                         class = "character",
                         paste = FALSE,
-                        copy = FALSE){
+                        copy = FALSE,
+                        copyDoubleClick = FALSE){
   stopifnot(is.matrix(value))
   tagList(
     singleton(tags$head(tags$script(src = "shinyMatrix/matrixInput.js"))),
@@ -63,7 +65,8 @@ matrixInput <- function(inputId,
       "data-cols" = jsonlite::toJSON(cols, auto_unbox = TRUE),
       "data-class" = class,
       "data-copy" = jsonlite::toJSON(copy, auto_unbox = TRUE),
-      "data-paste" = jsonlite::toJSON(paste, auto_unbox = TRUE)
+      "data-paste" = jsonlite::toJSON(paste, auto_unbox = TRUE),
+      "data-copyDoubleClick" = jsonlite::toJSON(copyDoubleClick, auto_unbox = TRUE)
     )
   )
 }
