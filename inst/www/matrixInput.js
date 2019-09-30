@@ -230,10 +230,10 @@ function isEmpty(obj) {
             var data = parseTSV(content);
 
             for (var i = 0; i < data.length; i++){
-                var tr = $(".matrix-input-row", tableEl).eq(i);
+                var tr = $(".matrix-input-row:visible", tableEl).eq(i);
 
                 for (var j = 0; j < (data.length > 0 ? data[0].length : 0); j ++){
-                    var td = $(".matrix-input-cell", tr).eq(j);
+                    var td = $(".matrix-input-cell:visible", tr).eq(j);
                     td.text(data[i][j]);
                     td.addClass("matrix-input-cell-pasted");
                 }
@@ -288,23 +288,23 @@ function isEmpty(obj) {
             cell = $(this).closest("td");
             tableEl = $(this).closest("table");
 
-            currentRow = $("tr.matrix-input-row", tableEl).index($(this).closest("tr"));
-            currentCol = $("td.matrix-input-cell", cell.parent()).index(cell);
+            currentRow = $("tr.matrix-input-row:visible", tableEl).index($(this).closest("tr"));
+            currentCol = $("td.matrix-input-cell:visible", cell.parent()).index(cell);
 
             if (e.keyCode == 13){
-                nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow + 1);
-                nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol);
+                nextRow = $("tr.matrix-input-row:visible", tableEl).eq(currentRow + 1);
+                nextCell = $("td.matrix-input-cell:visible", nextRow).eq(currentCol);
             }
 
             if (e.keyCode == 9){
-                nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow);
-                nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol + 1);
+                nextRow = $("tr.matrix-input-row:visible", tableEl).eq(currentRow);
+                nextCell = $("td.matrix-input-cell:visible", nextRow).eq(currentCol + 1);
             }
 
             if (e.keyCode == -13){
                 if (currentRow > 0){
-                    nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow - 1);
-                    nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol);
+                    nextRow = $("tr.matrix-input-row:visible", tableEl).eq(currentRow - 1);
+                    nextCell = $("td.matrix-input-cell:visible", nextRow).eq(currentCol);
                 } else {
                     nextCell = [];
 
@@ -312,10 +312,10 @@ function isEmpty(obj) {
             }
 
             if (e.keyCode == -9){
-                nextRow = $("tr.matrix-input-row", tableEl).eq(currentRow);
+                nextRow = $("tr.matrix-input-row:visible", tableEl).eq(currentRow);
 
                 if (currentCol > 0){
-                    nextCell = $("td.matrix-input-cell", nextRow).eq(currentCol - 1);
+                    nextCell = $("td.matrix-input-cell:visible", nextRow).eq(currentCol - 1);
                 } else {
                     nextCell = [];
                 }
@@ -490,7 +490,7 @@ function isEmpty(obj) {
         });
 
         $(document).on("copy", function(e){
-            if ($("td.matrix-input-cell-selected", el).length == 0) return;
+            if ($("td.matrix-input-cell-selected:visible", el).length == 0) return;
 
             $("input", el).trigger("updateInput");
 
@@ -501,7 +501,7 @@ function isEmpty(obj) {
             var tableArray = [];
 
             $("tr.matrix-input-row", el).each(function(){
-                var cells = $("td.matrix-input-cell-selected", $(this));
+                var cells = $("td.matrix-input-cell-selected:visible", $(this));
 
                 if (cells.length == 0) return null;
 
