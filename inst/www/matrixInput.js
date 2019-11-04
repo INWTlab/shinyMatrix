@@ -93,7 +93,6 @@ function isEmpty(obj) {
         var ncol = (value.data.length > 0 ? value.data[0].length :
                     (value.colnames !== undefined ? value.colnames.length : 0));
 
-        console.log(ncol);
 
         for (var i = 0; i < ncol; i ++){
             var text = (isEmpty(value.colnames) ? "" : value.colnames[i]);
@@ -121,7 +120,6 @@ function isEmpty(obj) {
         var ncol = (value.data.length > 0 ? value.data[0].length :
                     (value.colnames !== undefined ? value.colnames.length : 0));
 
-        console.log(ncol);
         for (var i = 0; i < ncol; i ++){
             var text = (isEmpty(value.colnames) ? "" : value.colnames[i]);
             var th = $(".matrix-input-col-header-cell", colHeader).eq(i);
@@ -252,6 +250,12 @@ function isEmpty(obj) {
 
         inputEl.on("updateInput", function(){
             var el = $(this).closest(".matrix-input");
+
+           /* check numeric input */
+            if($(el).data("options").class == "numeric" && $(this).val().trim() != "" && isNaN(parseFloat($(this).val()))) {
+                alert("Input must be numeric.");
+                $(this).val("");
+            }
 
             $(this).closest(".matrix-input").trigger("change");
             $(this).parent().html($(this).val());
@@ -842,6 +846,7 @@ function isEmpty(obj) {
         options.copy = setDefault(options.copy, false);
         options.copydoubleclick = setDefault(options.copydoubleclick, false);
         options.paste = setDefault(options.paste, false);
+        options.class = setDefault(options.class, "character");
 
         this.data("options", options);
 
@@ -873,8 +878,6 @@ function isEmpty(obj) {
 
         sanitizeValue(value);
 
-        console.log(value);
-
         setValue(this, value);
 
         return this;
@@ -898,7 +901,8 @@ $.extend(matrixInputBinding, {
             },
             copy: $(el).data("copy"),
             paste: $(el).data("paste"),
-            copydoubleclick: $(el).data("copydoubleclick")
+            copydoubleclick: $(el).data("copydoubleclick"),
+            class: $(el).data("class")
         });
     },
     getId: function(el) {
