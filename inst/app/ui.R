@@ -10,6 +10,7 @@ shiny::tagList(
     shiny::fluidRow(
       column(6, matrixInput(
         inputId = "matrix",
+        label = "Default matrix",
         value = m,
         class = "numeric",
         cols = list(
