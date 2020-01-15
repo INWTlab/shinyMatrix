@@ -346,12 +346,11 @@ function isEmpty(obj) {
 
             clicks ++;
 
-            if (clicks == 1) {
+            if (clicks == 1 && $("input", target).length == 0) {
                 tt = setTimeout(
                     function(e){
                         var inputEl = createInput(content);
 
-                        inputEl.select();
                         addInputBindings(inputEl);
 
                         target.html("");
