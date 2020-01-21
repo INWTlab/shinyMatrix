@@ -447,6 +447,8 @@ function isEmpty(obj) {
     function addCopyBinding(el){
         $("td.matrix-input-cell", el).on("mousedown", function(e){
             var cell = $(this);
+            if ($("input", cell).length > 0) return;
+
             var row = cell.parent();
 
             selectStart = {
