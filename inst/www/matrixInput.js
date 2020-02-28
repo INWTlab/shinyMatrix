@@ -346,7 +346,7 @@ function isEmpty(obj) {
 
             clicks ++;
 
-            if (clicks == 1 && $("input", target).length == 0) {
+            if (clicks == 1 && $("input", target).length == 0 && !mouseMoved) {
                 tt = setTimeout(
                     function(e){
                         var inputEl = createInput(content);
@@ -443,14 +443,16 @@ function isEmpty(obj) {
     };
 
     var selectStart = null;
+    var mouseMoved = false;
 
     function addCopyBinding(el){
         $("td.matrix-input-cell", el).on("mousedown", function(e){
+            mouseMoved = false;
             var cell = $(this);
+
             if ($("input", cell).length > 0) return;
 
             var row = cell.parent();
-
             selectStart = {
                 col: $(".matrix-input-cell", row).index(cell),
                 row: $(".matrix-input-row", row.parent()).index(row)
@@ -462,6 +464,7 @@ function isEmpty(obj) {
         });
 
         $("td.matrix-input-cell", el).on("mousemove", function(){
+            mouseMoved = true;
             if (selectStart == null) return;
 
             var cell = $(this);
@@ -488,6 +491,8 @@ function isEmpty(obj) {
                     cell.removeClass("matrix-input-cell-selected");
                 }
             });
+
+            $("input", el).blur();
         });
 
         $(document).on("mouseup", function(){
