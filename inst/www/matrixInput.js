@@ -491,6 +491,8 @@ function isEmpty(obj) {
                     cell.removeClass("matrix-input-cell-selected");
                 }
             });
+
+            $("input", el).blur();
         });
 
         $(document).on("mouseup", function(){
