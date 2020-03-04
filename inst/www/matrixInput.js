@@ -212,7 +212,6 @@ function isEmpty(obj) {
 
     function addPasteBinding(tableEl){
         $(tableEl).on("paste", function(e){
-            $("td", tableEl).removeClass("matrix-input-cell-selected");
             $("td", tableEl).each(function(){
                 $(this).removeClass("matrix-input-cell-pasted");
                 void this.offsetWidth;
@@ -227,11 +226,20 @@ function isEmpty(obj) {
 
             var data = parseTSV(content);
 
+            var trSelector, tdSelector;
+            if ($(".matrix-input-cell-selected", tableEl).length > 0) {
+                trSelector = ".matrix-input-row.matrix-input-row-selected:visible";
+                tdSelector = ".matrix-input-cell.matrix-input-cell-selected:visible";
+            } else {
+                trSelector = ".matrix-input-row:visible";
+                tdSelector = ".matrix-input-cell:visible";
+            }
+
             for (var i = 0; i < data.length; i++){
-                var tr = $(".matrix-input-row:visible", tableEl).eq(i);
+                var tr = $(trSelector, tableEl).eq(i);
 
                 for (var j = 0; j < (data.length > 0 ? data[0].length : 0); j ++){
-                    var td = $(".matrix-input-cell:visible", tr).eq(j);
+                    var td = $(tdSelector, tr).eq(j);
                     td.text(data[i][j]);
                     td.addClass("matrix-input-cell-pasted");
                 }
@@ -447,6 +455,8 @@ function isEmpty(obj) {
 
     function addCopyBinding(el){
         $("td.matrix-input-cell", el).on("mousedown", function(e){
+            $(':focus').blur();
+            el.focus();
             mouseMoved = false;
             var cell = $(this);
 
@@ -458,6 +468,7 @@ function isEmpty(obj) {
                 row: $(".matrix-input-row", row.parent()).index(row)
             };
 
+            $(".matrix-input-row", el).removeClass("matrix-input-row-selected");
             $(".matrix-input-cell", el).removeClass("matrix-input-cell-selected");
 
             e.preventDefault();
@@ -484,6 +495,12 @@ function isEmpty(obj) {
                 var row = cell.parent();
                 var j = $(".matrix-input-cell", row).index(cell);
                 var i = $(".matrix-input-row", row.parent()).index(row);
+
+                if (rowmin <= i && i <= rowmax) {
+                    row.addClass("matrix-input-row-selected");
+                } else {
+                    row.removeClass("matrix-input-row-selected");
+                }
 
                 if (rowmin <= i && i <= rowmax && colmin <= j && j <= colmax){
                     cell.addClass("matrix-input-cell-selected");
