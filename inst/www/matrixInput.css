@@ -29,3 +29,7 @@
         background-color: #FFF;
     }
 }
+
+.shiny-matrix-input-container {
+    width: auto !important;
+}

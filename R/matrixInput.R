@@ -73,7 +73,7 @@ matrixInput <- function(inputId,
     singleton(tags$head(tags$script(src = "shinyMatrix/matrixInput.js"))),
     singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "shinyMatrix/matrixInput.css"))),
     div(
-      class = "form-group shiny-input-container",
+      class = "form-group shiny-matrix-input-container shiny-input-container",
       if (!is.null(label)) tags$label(label, `for` = inputId) else NULL,
       inputField
     )
