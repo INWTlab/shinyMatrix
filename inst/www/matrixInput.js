@@ -212,6 +212,8 @@ function isEmpty(obj) {
 
     function addPasteBinding(tableEl){
         $(tableEl).on("paste", function(e){
+            if ($("input", $(this)).length > 0) return;
+
             $("td", tableEl).each(function(){
                 $(this).removeClass("matrix-input-cell-pasted");
                 void this.offsetWidth;
