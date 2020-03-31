@@ -336,12 +336,15 @@ function isEmpty(obj) {
             }
 
             if (nextCell.length > 0){
+                pseudoClick = true;
                 $(nextCell).click();
                 $(this).trigger("updateInput");
             }
             e.preventDefault();
         });
     };
+
+    var pseudoClick = false;
 
     function addBindings(el) {
         var options = $(el).data("options");
@@ -356,7 +359,7 @@ function isEmpty(obj) {
 
             clicks ++;
 
-            if (clicks == 1 && $("input", target).length == 0 && !mouseMoved) {
+            if (clicks == 1 && $("input", target).length == 0 && (!mouseMoved || pseudoClick)) {
                 tt = setTimeout(
                     function(e){
                         var inputEl = createInput(content);
@@ -376,6 +379,7 @@ function isEmpty(obj) {
                 clearTimeout(tt);
                 clicks = 0;
             }
+            pseudoClick = false;
         });
 
         if (options.copy){
@@ -457,7 +461,7 @@ function isEmpty(obj) {
 
     function addCopyBinding(el){
         $("td.matrix-input-cell", el).on("mousedown", function(e){
-            if ($("input", cell).length > 0) {
+            if ($("input", $(this)).length > 0) {
                 return;
             }
 
