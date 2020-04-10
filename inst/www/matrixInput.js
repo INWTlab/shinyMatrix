@@ -444,7 +444,7 @@ function isEmpty(obj) {
             if ($("input", $(this)).length > 0) return;
 
             var target = $("div", $(this));
-            var inputEl = createInput($(this).text());
+            var inputEl = createInput(target.text());
 
             inputEl.select();
             addHeaderInputBindings(inputEl);
