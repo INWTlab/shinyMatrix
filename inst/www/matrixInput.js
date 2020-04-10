@@ -441,6 +441,8 @@ function isEmpty(obj) {
         $(selector, tableEl).off("click");
 
         $(selector, tableEl).click(function(e){
+            if ($("input", $(this)).length > 0) return;
+
             var target = $("div", $(this));
             var inputEl = createInput($(this).text());
 
