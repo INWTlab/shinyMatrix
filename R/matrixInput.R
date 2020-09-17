@@ -23,7 +23,7 @@
 #' @param inputId The input slot that will be used to access the value
 #' @param label label for input field
 #' @param inputClass class of the matrix input html element
-#' @param value Inital value. Should be a matrix
+#' @param value Initial value. Should be a matrix
 #' @param class Matrix will be coerced to a matrix of this class. `character` and `numeric`
 #' are supported
 #' @param rows list of options to configure rows

@@ -118,7 +118,7 @@ startApplication("app")
 
 - Select cells in matrix by dragging with the mouse
 - Press Ctrl+C to copy and Ctrl+V to paste
-- Use the textfeld below to see how pasting into another application would look like
+- Use the textfield below to see how pasting into another application would look like
 - If you select cells in the matrix and press Ctrl+V values will be pasted into that region
 
 ```r

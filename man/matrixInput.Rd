@@ -4,14 +4,25 @@
 \alias{matrixInput}
 \title{Create a matrix input field}
 \usage{
-matrixInput(inputId, value = matrix("", 1, 1), inputClass = "",
-  rows = list(), cols = list(), class = "character", paste = FALSE,
-  copy = FALSE, copyDoubleClick = FALSE)
+matrixInput(
+  inputId,
+  label = NULL,
+  value = matrix("", 1, 1),
+  inputClass = "",
+  rows = list(),
+  cols = list(),
+  class = "character",
+  paste = FALSE,
+  copy = FALSE,
+  copyDoubleClick = FALSE
+)
 }
 \arguments{
 \item{inputId}{The input slot that will be used to access the value}
 
-\item{value}{Inital value. Should be a matrix}
+\item{label}{label for input field}
+
+\item{value}{Initial value. Should be a matrix}
 
 \item{inputClass}{class of the matrix input html element}
 
