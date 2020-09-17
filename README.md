@@ -100,24 +100,65 @@ updateMatrixInput(session, inputId, value = NULL)
 
 You find the code for the example app in `inst/appXXX`.
 
+### Basic functionality
+
+- Fixed matrix width
+- Editable matrix content
+- No column and rownames
+
+Use the matrix on the left to input values, matrix on the right displays the result.
+
 ```r
 library(shinyMatrix)
 
-## Basic Functionality
 startApplication("app")
+```
 
-## Copy Pasting
+### Copy Paste
+
+- Select cells in matrix by dragging with the mouse
+- Press Ctrl+C to copy and Ctrl+V to paste
+- Use the textfeld below to see how pasting into another application would look like
+- If you select cells in the matrix and press Ctrl+V values will be pasted into that region
+
+```r
+library(shinyMatrix)
+
 startApplication("appCopy")
+```
 
-## Update Matrix Input from R
+### Update Matrix Input from R
+
+- Generate a random matrix within the shiny server function by clicking on "Update Matrix"
+- The matrixInput field gets updated with `updateMatrixInput` from R
+
+```r
 startApplication("appUpdate")
+```
 
-## Editable rownames
+### Editable row and column names
+
+- Edit row and column names by clicking on the cell
+- The result will be shown on the right
+
+```r
 startApplication("appRownames")
+```
 
-## Extend Matrix Automatically
+### Extend Matrix Automatically
+
+- If matrix is full (last row and columns contain values) rows and columns are added automatically 
+- Copy pasting functionality enabled
+
+```r
 startApplication("appExtend")
+```
 
-## Custom Column Header 
+### Custom Column Header
+
+- Replace default header with a custom one
+- Automatically add 2 columns if matrix is full
+
+```r
 startApplication("appCustom")
 ```

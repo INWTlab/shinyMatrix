@@ -1,7 +1,7 @@
 library(shinyMatrix)
 
 m <- matrix(sample(letters, 16, replace = TRUE), 4, 4)
-colnames(m) <- c("Var1-A", "Var1-B", "Var2-A", "Var2-B")
+colnames(m) <- c("Var1||A", "Var1||B", "Var2||A", "Var2||B")
 
 tagList(
   fluidPage(
@@ -14,9 +14,9 @@ tagList(
       class = "character",
       cols = list(
         names = TRUE,
-        createHeader = "myapp.createColHeader",
-        updateHeader = "myapp.updateColHeader",
-        getHeader = "myapp.getColHeader",
+        createHeader = "myapp.doubleHeader.create",
+        updateHeader = "myapp.doubleHeader.update",
+        getHeader = "myapp.doubleHeader.get",
         extend = TRUE,
         delta = 2,
         editableNames = TRUE

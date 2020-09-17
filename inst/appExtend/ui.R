@@ -15,7 +15,7 @@ shiny::tagList(
         names = TRUE,
         extend = TRUE,
         editableNames = TRUE,
-        delta = 2
+        delta = 1
       ),
       rows = list(
         names = TRUE,
