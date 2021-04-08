@@ -1,6 +1,6 @@
 /* Vue */
 Vue.component('matrix-input', {
-    props: ["values", "rownames", "colnames"],
+    props: ["values", "rownames", "colnames", "rows", "cols", "pagination"],
     data () {
       return {
         focus: {
@@ -8,7 +8,6 @@ Vue.component('matrix-input', {
           i: null,
           j: null
         },
-        paginate: true,
         current_page: 1,
         items_per_page: 10
       }
@@ -18,10 +17,10 @@ Vue.component('matrix-input', {
         return Math.ceil(this.rownames.length / this.items_per_page)
       },
       first_index () {
-        return (this.current_page - 1) * this.items_per_page
+        return this.pagination ? (this.current_page - 1) * this.items_per_page : 0;
       },
       last_index () {
-        return (this.current_page) * this.items_per_page;
+        return this.pagination ? (this.current_page) * this.items_per_page : this.values.length;
       },
       indices () {
         let res = [];
@@ -48,14 +47,16 @@ Vue.component('matrix-input', {
         <table>
           <tr>
             <th></th>
-            <matrix-header-cell v-for="(name, j) in colnames" :key="'column-' + j" :value="name" :i="j" type="column" :focus="focus"/>
+            <matrix-header-cell v-for="(name, j) in colnames" :key="'column-' + j" :value="name" :i="j" type="column" :focus="focus"
+            :config="cols"/>
           </tr>
           <tr v-for="i in indices" :key="i">
-            <matrix-header-cell :value="(rownames[i] || '')" :i="i" type="row" :focus="focus"/>
+            <matrix-header-cell :value="(rownames[i] || '')" :i="i" type="row" :focus="focus"
+            :config="rows"/>
             <matrix-cell v-for="(v, j) in values[i]" :key="j" :value="v" :i="i" :j="j" :focus="focus"/>
           </tr>
         </table>
-        <div class="pagination" v-if="paginate">
+        <div class="pagination" v-if="pagination">
           <div class="pagination-item" @click="current_page = 1">
             First
           </div>
@@ -164,7 +165,7 @@ Vue.component('matrix-cell', {
 })
 
 Vue.component('matrix-header-cell', {
-  props: ["value", "i", "type", "focus"],
+  props: ["value", "i", "type", "focus", "config"],
   data () {
      return {
          input_value: this.value
@@ -177,7 +178,7 @@ Vue.component('matrix-header-cell', {
     }
   },
   template: `
-  <th @mousedown="select" :class="{active: in_focus}">
+  <th @mousedown="select" :class="{active: in_focus, editable: config.editableNames}">
     <input ref="input" v-if="in_focus" v-model="input_value" @blur="update"
     v-on:keydown.enter.exact="next_row"
     v-on:keydown.shift.enter="previous_row"
@@ -193,6 +194,7 @@ Vue.component('matrix-header-cell', {
           this.$root.$emit('update_name', {value: this.input_value, i: this.i, type: this.type})
       },
       select (e) {
+        if (!this.config.editableNames) return;
         if (!this.in_focus) {
           this.$parent.set_focus({type: this.type, i: this.i})
           e.preventDefault();
@@ -242,25 +244,78 @@ Vue.directive('focus', {
 /* Shiny Bindings */
 
 var matrixInput = new Shiny.InputBinding();
-var app;
+var vms = {};
 
 $.extend(matrixInput, {
   initialize: function(el) {
-    app = new Vue({
-        el: el,
+     let values = $(el).data("values");
+
+     vms[el.id] = new Vue({
+        el: $(".vue-element", $(el))[0],
         data: {
-            values: $(el).data("values"),
+            values: values,
             rownames: $(el).data("rownames"),
-            colnames: $(el).data("colnames")
+            colnames: $(el).data("colnames"),
+            rows: $(el).data("rows"),
+            cols: $(el).data("cols"),
+            pagination: $(el).data("pagination")
+        },
+        computed: {
+            n_rows () {
+              let last_rowname = _.findLastIndex(this.rownames, o => o && o != '') + 1;
+              let last_row = _.findLastIndex(this.values, o => _.some(o, x => x && x != '')) + 1;
+              return Math.max(last_rowname, last_row);
+            },
+            n_cols () {
+              let last_colname = _.findLastIndex(this.colnames, o => o && o != '') + 1;
+              let last_col = _.max(_.map(this.values, o => _.findLastIndex(o, x => x && x != ''))) + 1;
+              return Math.max(last_colname, last_col);
+            }
         },
         watch: {
             values () {
                 $(el).trigger("change");
+            },
+            n_rows: {
+              immediate: true,
+              handler () {
+                if (this.rows.extend) {
+                  while (this.rownames.length < this.n_rows + this.rows.delta + this.n_rows % this.rows.delta) {
+                    this.rownames.push('');
+                  }
+
+                  while (this.values.length < this.n_rows + this.rows.delta + this.n_rows % this.rows.delta) {
+                    this.values.push(_.times(this.colnames.length, _.constant('')));
+                  }
+                }
+              }
+            },
+            n_cols: {
+              immediate: true,
+              handler () {
+                if (this.cols.extend) {
+                  while (this.colnames.length < this.n_cols + this.cols.delta + this.n_cols % this.cols.delta) {
+                    this.colnames.push('');
+                  }
+
+                  for (let i = 0; i < this.values.length; i ++) {
+                    let x = this.values[i];
+                    while (x.length < this.n_cols + this.cols.delta + this.n_cols % this.cols.delta) {
+                      x.push('');
+                    }
+                    Vue.set(this.values, i, x);
+                  }
+                }
+              }
             }
-        }
+        },
+        template: `
+          <matrix-input :values="values" :rownames="rownames" :colnames="colnames"
+          :rows="rows" :cols="cols" :pagination="pagination"/>
+        `
     })
 
-    app.$on("update_cell", function(o) {
+    vms[el.id].$on("update_cell", function(o) {
       let row = this.values[o.i];
       row[o.j] = o.value;
 
@@ -268,7 +323,7 @@ $.extend(matrixInput, {
     })
 
 
-    app.$on("update_name", function(o) {
+    vms[el.id].$on("update_name", function(o) {
       if (o.type == "row") {
         Vue.set(this.rownames, o.i, o.value);
       }
@@ -282,7 +337,18 @@ $.extend(matrixInput, {
     return $(scope).find(".vue-input");
   },
   getValue: function(el) {
-    return app.$data;
+    return {
+      data: vms[el.id].$data.values,
+      rownames: vms[el.id].$data.rownames,
+      colnames: vms[el.id].$data.colnames
+    }
+  },
+  getType: function(el) {
+    if ($(el).data("class") == "numeric")
+        return "shinyMatrix.matrixNumeric";
+    else
+        return "shinyMatrix.matrixCharacter";
+
   },
   subscribe: function(el, callback) {
     $(el).on("change", function(e) {

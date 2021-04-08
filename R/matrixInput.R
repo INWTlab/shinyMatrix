@@ -52,26 +52,30 @@ matrixInput <- function(inputId,
                         class = "character",
                         paste = FALSE,
                         copy = FALSE,
-                        copyDoubleClick = FALSE){
+                        copyDoubleClick = FALSE,
+                        pagination = FALSE){
   stopifnot(is.matrix(value))
+
+  if (is.null(rownames(value))) rownames(value) <- rep('', nrow(value))
+  if (is.null(colnames(value))) colnames(value) <- rep('', ncol(value))
 
   inputField <- tags$div(
     id = inputId,
-    class = paste("matrix-input", inputClass),
-    "data-data" = jsonlite::toJSON(value),
+    class = "vue-input",
+    "data-values" = jsonlite::toJSON(value),
     "data-rownames" = jsonlite::toJSON(rownames(value)),
     "data-colnames" = jsonlite::toJSON(colnames(value)),
     "data-rows" = jsonlite::toJSON(rows, auto_unbox = TRUE),
     "data-cols" = jsonlite::toJSON(cols, auto_unbox = TRUE),
-    "data-class" = class,
-    "data-copy" = jsonlite::toJSON(copy, auto_unbox = TRUE),
-    "data-paste" = jsonlite::toJSON(paste, auto_unbox = TRUE),
-    "data-copyDoubleClick" = jsonlite::toJSON(copyDoubleClick, auto_unbox = TRUE)
+    "data-pagination" = jsonlite::toJSON(pagination, auto_unbox = TRUE),
+    tags$div(class = "vue-element")
   )
 
   tagList(
-    singleton(tags$head(tags$script(src = "shinyMatrix/matrixInput.js"))),
-    singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "shinyMatrix/matrixInput.css"))),
+    singleton(tags$head(tags$script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"))),
+    singleton(tags$head(tags$script(src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"))),
+    singleton(tags$head(tags$script(src = "shinyMatrix/matrix-input.js"))),
+    singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "shinyMatrix/matrix-input.css"))),
     div(
       class = "form-group shiny-matrix-input-container shiny-input-container",
       if (!is.null(label)) tags$label(label, `for` = inputId) else NULL,

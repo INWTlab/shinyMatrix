@@ -9,9 +9,16 @@
 .vue-input td,
 .vue-input th {
     padding: 0.1em 0.5em;
-    cursor: pointer;
     border: 1px gray solid;
     height: 2em;
+}
+
+.vue-input td {
+    cursor: pointer;
+}
+
+.vue-input th.editable {
+    cursor: pointer;
 }
 
 .vue-input td.active,
