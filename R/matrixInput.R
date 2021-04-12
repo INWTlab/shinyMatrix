@@ -61,12 +61,13 @@ matrixInput <- function(inputId,
 
   inputField <- tags$div(
     id = inputId,
-    class = "vue-input",
+    class = paste("vue-input", inputClass),
     "data-values" = jsonlite::toJSON(value),
     "data-rownames" = jsonlite::toJSON(rownames(value)),
     "data-colnames" = jsonlite::toJSON(colnames(value)),
     "data-rows" = jsonlite::toJSON(rows, auto_unbox = TRUE),
     "data-cols" = jsonlite::toJSON(cols, auto_unbox = TRUE),
+    "data-class" = jsonlite::toJSON(class, auto_unbox = FALSE),
     "data-pagination" = jsonlite::toJSON(pagination, auto_unbox = TRUE),
     tags$div(class = "vue-element")
   )

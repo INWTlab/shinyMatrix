@@ -1,6 +1,6 @@
 /* Vue */
 Vue.component('matrix-input', {
-    props: ["values", "rownames", "colnames", "rows", "cols", "pagination"],
+    props: ["values", "rownames", "colnames", "rows", "cols", "pagination", "content_class"],
     data () {
       return {
         focus: {
@@ -53,7 +53,8 @@ Vue.component('matrix-input', {
           <tr v-for="i in indices" :key="i">
             <matrix-header-cell :value="(rownames[i] || '')" :i="i" type="row" :focus="focus"
             :config="rows"/>
-            <matrix-cell v-for="(v, j) in values[i]" :key="j" :value="v" :i="i" :j="j" :focus="focus"/>
+            <matrix-cell v-for="(v, j) in values[i]" :key="j" :value="v" :i="i" :j="j" :focus="focus"
+            :content_class="content_class"/>
           </tr>
         </table>
         <div class="pagination" v-if="pagination">
@@ -101,12 +102,23 @@ Vue.component('matrix-input', {
             value.j >= 0) {
           this.focus = value;
         }
+      },
+      clicked (e) {
+        if(!this.$el.contains(e.target)) {
+          this.focus = {type: '', i: null, j: null};
+        }
       }
-    }
+    },
+    mounted () {
+      document.addEventListener('click', this.clicked)
+    },
+    destroyed () {
+      document.removeEventListener('click', this.clicked)
+    },
 })
 
 Vue.component('matrix-cell', {
-    props: ["value", "i", "j", "focus"],
+    props: ["value", "i", "j", "focus", "content_class"],
     data () {
        return {
            input_value: this.value
@@ -132,9 +144,15 @@ Vue.component('matrix-cell', {
     </td>
   `,
   methods: {
-      update () {
-          this.$root.$emit('update_cell', {value: this.input_value, i: this.i, j: this.j})
-          // this.$parent.set_focus(false)
+      update (e) {
+        if (this.content_class == "numeric") {
+          if (this.input_value.toString().trim() != "" && isNaN(parseFloat(this.input_value))) {
+            this.input_value = this.value;
+            alert("Input must be numeric!")
+            return;
+          }
+        }
+        this.$root.$emit('update_cell', {value: this.input_value, i: this.i, j: this.j})
       },
       select (e) {
         if (!this.in_focus) {
@@ -187,6 +205,9 @@ Vue.component('matrix-header-cell', {
     v-focus
     />
     <span v-else>{{ value }}</span>
+    <span class="delete-button" v-if="config.delete && value != ''" @mousedown="delete_all">
+      [x]
+    </span>
   </th>
   `,
   methods: {
@@ -199,6 +220,10 @@ Vue.component('matrix-header-cell', {
           this.$parent.set_focus({type: this.type, i: this.i})
           e.preventDefault();
         }
+      },
+      delete_all (e) {
+        this.$root.$emit('delete_all', {i: this.i, type: this.type})
+        e.stopPropagation();
       },
       focus_element (e) {
         if (this.$refs.input) this.$refs.input.focus();
@@ -258,6 +283,7 @@ $.extend(matrixInput, {
             colnames: $(el).data("colnames"),
             rows: $(el).data("rows"),
             cols: $(el).data("cols"),
+            content_class: $(el).data("class")[0],
             pagination: $(el).data("pagination")
         },
         computed: {
@@ -311,7 +337,8 @@ $.extend(matrixInput, {
         },
         template: `
           <matrix-input :values="values" :rownames="rownames" :colnames="colnames"
-          :rows="rows" :cols="cols" :pagination="pagination"/>
+          :rows="rows" :cols="cols" :pagination="pagination" :content_class="content_class"
+          />
         `
     })
 
@@ -330,6 +357,23 @@ $.extend(matrixInput, {
 
       if (o.type == "column") {
         Vue.set(this.colnames, o.i, o.value);
+      }
+    })
+
+    vms[el.id].$on("delete_all", function(o) {
+      if (o.type == "row") {
+        Vue.delete(this.rownames, o.i);
+        Vue.delete(this.values, o.i);
+      }
+
+      if (o.type == "column") {
+        Vue.delete(this.colnames, o.i);
+        
+        for (let i = 0; i < this.values.length; i ++) {
+          let row = values[i];
+          row.splice(o.i, 1);
+          Vue.set(this.values, i, row);
+        }
       }
     })
   },

@@ -15,13 +15,15 @@ shiny::tagList(
         names = TRUE,
         extend = TRUE,
         editableNames = TRUE,
-        delta = 2
+        delta = 2,
+        delete = TRUE
       ),
       rows = list(
         names = TRUE,
         extend = TRUE,
         editableNames = TRUE,
-        delta = 1
+        delta = 1,
+        delete = TRUE
       ),
       copy = TRUE,
       paste = TRUE
