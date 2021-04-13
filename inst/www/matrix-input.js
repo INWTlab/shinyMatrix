@@ -414,9 +414,7 @@ $.extend(matrixInput, {
     })
 
     vms[el.id].$on("update_cell", function(o) {
-      if (!this.values[o.i])
-
-      values[o.i] = [""];
+      if (!this.values[o.i]) this.values[o.i] = [""];
 
       let row = this.values[o.i];
       row[o.j] = o.value;
