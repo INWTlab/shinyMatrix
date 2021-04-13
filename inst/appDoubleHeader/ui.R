@@ -12,11 +12,10 @@ tagList(
       inputId = "matrix",
       value = m,
       class = "character",
+      pagination = TRUE,
       cols = list(
         names = TRUE,
-        createHeader = "myapp.doubleHeader.create",
-        updateHeader = "myapp.doubleHeader.update",
-        getHeader = "myapp.doubleHeader.get",
+        multiheader = TRUE,
         extend = TRUE,
         delta = 2,
         editableNames = TRUE

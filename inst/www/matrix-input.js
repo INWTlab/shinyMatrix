@@ -1,6 +1,6 @@
 /* Vue */
 Vue.component('matrix-input', {
-    props: ["values", "rownames", "colnames", "rows", "cols", "pagination", "content_class"],
+    props: ["values", "rownames", "colnames", "rows", "cols", "pagination", "content_class", "multiheader"],
     data () {
       return {
         focus: {
@@ -20,7 +20,8 @@ Vue.component('matrix-input', {
         return this.pagination ? (this.current_page - 1) * this.items_per_page : 0;
       },
       last_index () {
-        return this.pagination ? (this.current_page) * this.items_per_page : this.values.length;
+        let i = this.pagination ? (this.current_page) * this.items_per_page : this.values.length;
+        return i > this.values.length ? this.values.length : i;
       },
       indices () {
         let res = [];
@@ -29,6 +30,15 @@ Vue.component('matrix-input', {
         }
 
         return res;
+      },
+      col_header () {
+        if (this.cols.multiheader) {
+          let splitted = _.map(this.colnames, o => o.split("||"));
+          console.log(_.zip(...splitted));
+          return _.zip(...splitted);
+        } else {
+          return [this.colnames];
+        }
       },
       pagination_indices () {
         let start = Math.max(1, this.current_page - 3);
@@ -45,9 +55,9 @@ Vue.component('matrix-input', {
     template: `
       <div>
         <table>
-          <tr>
+          <tr v-for="(header, k) in col_header" :key="'header-' + k">
             <th></th>
-            <matrix-header-cell v-for="(name, j) in colnames" :key="'column-' + j" :value="name" :i="j" type="column" :focus="focus"
+            <matrix-header-cell v-if="(k > 0 | j % 2 == 1)" :span="(k == 0 ? 2 : 1)" v-for="(name, j) in header" :key="'colheader-' + k + '-' + j" :value="name" :i="j" :header="k" type="column" :focus="focus"
             :config="cols"/>
           </tr>
           <tr v-for="i in indices" :key="i">
@@ -183,7 +193,7 @@ Vue.component('matrix-cell', {
 })
 
 Vue.component('matrix-header-cell', {
-  props: ["value", "i", "type", "focus", "config"],
+  props: ["value", "i", "type", "focus", "config", "header", "span"],
   data () {
      return {
          input_value: this.value
@@ -191,12 +201,16 @@ Vue.component('matrix-header-cell', {
   },
   computed: {
     in_focus () {
+      console.log(this.focus);
+      console.log(this.header);
       return this.focus.type == this.type &&
-        this.focus.i == this.i
+        this.focus.i == this.i &&
+        this.focus.header == this.header
     }
   },
   template: `
-  <th @mousedown="select" :class="{active: in_focus, editable: config.editableNames}">
+  <th @mousedown="select" :class="{active: in_focus, editable: config.editableNames}"
+  :colspan="span">
     <input ref="input" v-if="in_focus" v-model="input_value" @blur="update"
     v-on:keydown.enter.exact="next_row"
     v-on:keydown.shift.enter="previous_row"
@@ -212,12 +226,13 @@ Vue.component('matrix-header-cell', {
   `,
   methods: {
       update () {
-          this.$root.$emit('update_name', {value: this.input_value, i: this.i, type: this.type})
+          this.$root.$emit('update_name', {value: this.input_value, i: this.i, type: this.type, header: this.header})
       },
       select (e) {
         if (!this.config.editableNames) return;
+        if (this.header > 0) return;
         if (!this.in_focus) {
-          this.$parent.set_focus({type: this.type, i: this.i})
+          this.$parent.set_focus({type: this.type, i: this.i, header: this.header})
           e.preventDefault();
         }
       },
@@ -356,7 +371,9 @@ $.extend(matrixInput, {
       }
 
       if (o.type == "column") {
-        Vue.set(this.colnames, o.i, o.value);
+        let splitted = this.colnames[o.i].split('||');
+        splitted[o.header] = o.value;
+        Vue.set(this.colnames, o.i, splitted.join('||'));
       }
     })
 
