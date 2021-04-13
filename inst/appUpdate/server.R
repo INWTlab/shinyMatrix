@@ -1,7 +1,10 @@
 library(shinyMatrix)
 
 function(input, output, session) {
-  output$table <- renderTable(input$matrix, rownames = TRUE)
+  output$table <- renderTable({
+    req(colnames(input$matrix))
+    input$matrix
+  }, rownames = TRUE)
 
   observeEvent(input$button, {
     nrow <- sample(0:10, 1)

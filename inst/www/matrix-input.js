@@ -34,7 +34,6 @@ Vue.component('matrix-input', {
       col_header () {
         if (this.cols.multiheader) {
           let splitted = _.map(this.colnames, o => o.split("||"));
-          console.log(_.zip(...splitted));
           return _.zip(...splitted);
         } else {
           return [this.colnames];
@@ -57,7 +56,7 @@ Vue.component('matrix-input', {
         <table>
           <tr v-for="(header, k) in col_header" :key="'header-' + k">
             <th></th>
-            <matrix-header-cell v-if="(k > 0 | j % 2 == 1)" :span="(k == 0 ? 2 : 1)" v-for="(name, j) in header" :key="'colheader-' + k + '-' + j" :value="name" :i="j" :header="k" type="column" :focus="focus"
+            <matrix-header-cell v-if="(!cols.multiheader | k > 0 | j % 2 == 1)" :span="(k == 0 && cols.multiheader ? 2 : 1)" v-for="(name, j) in header" :key="'colheader-' + k + '-' + j" :value="name" :i="j" :header="k" type="column" :focus="focus"
             :config="cols"/>
           </tr>
           <tr v-for="i in indices" :key="i">
@@ -201,8 +200,6 @@ Vue.component('matrix-header-cell', {
   },
   computed: {
     in_focus () {
-      console.log(this.focus);
-      console.log(this.header);
       return this.focus.type == this.type &&
         this.focus.i == this.i &&
         this.focus.header == this.header
@@ -281,6 +278,54 @@ Vue.directive('focus', {
   }
 })
 
+/* Helper */
+function sanitizeValue(value){
+  var nrow,
+      ncols,
+      ncol,
+      i,
+      j;
+
+  if (value.rownames == null) value.rownames = [];
+  if (value.colnames == null) value.colnames = [];
+
+  if (typeof value.rownames === 'string') value.rownames = [value.rownames];
+  if (typeof value.colnames === 'string') value.colnames = [value.colnames];
+
+  nrow = Math.max(value.data.length, value.rownames.length);
+
+  ncols = value.data.map(function(el){ return el.length; });
+  ncol = Math.max(Math.max.apply(null, ncols), value.colnames.length);
+
+  if (ncol == 0 && nrow == 0) value.data = [];
+
+  if (nrow == 0){
+      value.rownames = [];
+
+      value.data = [];
+  }
+
+  if (ncol == 0){
+      value.colnames = [];
+
+      for (i = 0; i < nrow; i ++){
+          value.data[i] = [];
+      }
+  }
+
+  for (i = 0; i < nrow; i ++){
+      if (value.data[i] === undefined) value.data[i] = [];
+      if (value.rownames[i] === undefined) value.rownames[i] = "";
+      for (j = 0; j < ncol; j ++){
+          if (value.data[i][j] === undefined) value.data[i][j] = "";
+      }
+  }
+
+  for (j = 0; j < ncol; j ++){
+      if (value.colnames[j] === undefined) value.colnames[j] = "";
+  }
+}
+
 /* Shiny Bindings */
 
 var matrixInput = new Shiny.InputBinding();
@@ -311,53 +356,68 @@ $.extend(matrixInput, {
               let last_colname = _.findLastIndex(this.colnames, o => o && o != '') + 1;
               let last_col = _.max(_.map(this.values, o => _.findLastIndex(o, x => x && x != ''))) + 1;
               return Math.max(last_colname, last_col);
+            },
+            extended_rownames () {
+              let rownames = _.cloneDeep(this.rownames);
+
+              if (this.rows.extend) {
+                while (rownames.length < this.n_rows + this.rows.delta + this.n_rows % this.rows.delta) {
+                  rownames.push('');
+                }
+              }
+
+              return rownames;
+            },
+            extended_colnames () {
+              let colnames = _.cloneDeep(this.colnames);
+
+              if (this.rows.extend) {
+                while (colnames.length < this.n_cols + this.cols.delta + this.n_cols % this.cols.delta) {
+                  colnames.push('');
+                }
+              }
+
+              return colnames;
+            },
+            extended_values () {
+              let values = _.cloneDeep(this.values);
+
+              if (this.rows.extend) {
+                while (values.length < this.extended_rownames.length) {
+                  values.push(_.times(this.extended_colnames.length, _.constant('')));
+                }
+              }
+
+              if (this.cols.extend) {
+                for (let i = 0; i < this.values.length; i ++) {
+                  let x = values[i];
+                  while (x.length < this.extended_colnames.length) {
+                    x.push('');
+                  }
+                  values[i] = x;
+                }
+              }
+
+              return values;
             }
         },
         watch: {
-            values () {
+            extended_values () {
                 $(el).trigger("change");
             },
-            n_rows: {
-              immediate: true,
-              handler () {
-                if (this.rows.extend) {
-                  while (this.rownames.length < this.n_rows + this.rows.delta + this.n_rows % this.rows.delta) {
-                    this.rownames.push('');
-                  }
-
-                  while (this.values.length < this.n_rows + this.rows.delta + this.n_rows % this.rows.delta) {
-                    this.values.push(_.times(this.colnames.length, _.constant('')));
-                  }
-                }
-              }
-            },
-            n_cols: {
-              immediate: true,
-              handler () {
-                if (this.cols.extend) {
-                  while (this.colnames.length < this.n_cols + this.cols.delta + this.n_cols % this.cols.delta) {
-                    this.colnames.push('');
-                  }
-
-                  for (let i = 0; i < this.values.length; i ++) {
-                    let x = this.values[i];
-                    while (x.length < this.n_cols + this.cols.delta + this.n_cols % this.cols.delta) {
-                      x.push('');
-                    }
-                    Vue.set(this.values, i, x);
-                  }
-                }
-              }
-            }
         },
         template: `
-          <matrix-input :values="values" :rownames="rownames" :colnames="colnames"
+          <matrix-input :values="extended_values" :rownames="extended_rownames" :colnames="extended_colnames"
           :rows="rows" :cols="cols" :pagination="pagination" :content_class="content_class"
           />
         `
     })
 
     vms[el.id].$on("update_cell", function(o) {
+      if (!this.values[o.i])
+
+      values[o.i] = [""];
+
       let row = this.values[o.i];
       row[o.j] = o.value;
 
@@ -371,7 +431,7 @@ $.extend(matrixInput, {
       }
 
       if (o.type == "column") {
-        let splitted = this.colnames[o.i].split('||');
+        let splitted = this.colnames[o.i] ? this.colnames[o.i].split('||') : [];
         splitted[o.header] = o.value;
         Vue.set(this.colnames, o.i, splitted.join('||'));
       }
@@ -398,11 +458,15 @@ $.extend(matrixInput, {
     return $(scope).find(".vue-input");
   },
   getValue: function(el) {
-    return {
+    let raw = {
       data: vms[el.id].$data.values,
       rownames: vms[el.id].$data.rownames,
       colnames: vms[el.id].$data.colnames
     }
+
+    sanitizeValue(raw)
+
+    return raw;
   },
   getType: function(el) {
     if ($(el).data("class") == "numeric")
@@ -410,6 +474,16 @@ $.extend(matrixInput, {
     else
         return "shinyMatrix.matrixCharacter";
 
+  },
+  receiveMessage: function(el, data) {
+    if (data.hasOwnProperty('value')) {
+      sanitizeValue(data.value);
+      vms[el.id].$data.values = data.value.data;
+      vms[el.id].$data.rownames = data.value.rownames;
+      vms[el.id].$data.colnames = data.value.colnames;
+
+      $(el).trigger('change');
+    }
   },
   subscribe: function(el, callback) {
     $(el).on("change", function(e) {

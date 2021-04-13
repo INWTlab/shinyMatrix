@@ -17,8 +17,12 @@ jsonToMatrix <- function(x, coerce = as.character){
     return(m)
   }
 
-  m <- do.call("rbind", lapply(x$data, function(row) coerce(unlist(row))))
-
+  m <- do.call("rbind", lapply(x$data, function(row) {
+    row <- if (isEmpty(row)) character(0) else row
+    row <- lapply(row, function(el) if (is.null(el)) "" else el)
+    coerce(unlist(row))
+  }))
+  
   if (!isEmpty(x$colnames)) colnames(m) <- x$colnames
   if (!isEmpty(x$rownames)) rownames(m) <- x$rownames
 
