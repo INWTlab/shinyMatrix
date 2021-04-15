@@ -33,7 +33,7 @@ Vue.component('matrix-input', {
       },
       col_header () {
         if (this.cols.multiheader) {
-          let splitted = _.map(this.colnames, o => o.split("||"));
+          let splitted = _.map(this.colnames, o => (o ? o.split("||") : []));
           return _.zip(...splitted);
         } else {
           return [this.colnames];
@@ -56,7 +56,7 @@ Vue.component('matrix-input', {
         <table>
           <tr v-for="(header, k) in col_header" :key="'header-' + k">
             <th></th>
-            <matrix-header-cell v-if="(!cols.multiheader | k > 0 | j % 2 == 1)" :span="(k == 0 && cols.multiheader ? 2 : 1)" v-for="(name, j) in header" :key="'colheader-' + k + '-' + j" :value="name" :i="j" :header="k" type="column" :focus="focus"
+            <matrix-header-cell v-if="(!cols.multiheader | k > 0 | j % 2 == 0)" :span="(k == 0 && cols.multiheader ? 2 : 1)" v-for="(name, j) in header" :key="'colheader-' + k + '-' + j" :value="name" :i="j" :header="k" type="column" :focus="focus"
             :config="cols"/>
           </tr>
           <tr v-for="i in indices" :key="i">
@@ -155,6 +155,8 @@ Vue.component('matrix-cell', {
   methods: {
       update (e) {
         if (this.content_class == "numeric") {
+          if (!this.input_value) return;
+          
           if (this.input_value.toString().trim() != "" && isNaN(parseFloat(this.input_value))) {
             this.input_value = this.value;
             alert("Input must be numeric!")
