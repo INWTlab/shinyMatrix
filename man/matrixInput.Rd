@@ -14,7 +14,8 @@ matrixInput(
   class = "character",
   paste = FALSE,
   copy = FALSE,
-  copyDoubleClick = FALSE
+  copyDoubleClick = FALSE,
+  pagination = FALSE
 )
 }
 \arguments{
@@ -33,11 +34,13 @@ matrixInput(
 \item{class}{Matrix will be coerced to a matrix of this class. `character` and `numeric`
 are supported}
 
-\item{paste}{enable paste functionality}
+\item{paste}{old argument}
 
-\item{copy}{enable copy functionality}
+\item{copy}{old argument}
 
-\item{copyDoubleClick}{enable functionality to copy cell on double click}
+\item{copyDoubleClick}{old argument}
+
+\item{pagination}{Use pagination to display matrix}
 }
 \description{
 Use this function to create a matrix input field. Typically this would be in the `ui.R` file
@@ -66,9 +69,7 @@ matrixInput(
   "myMatrix",
   value = diag(3),
   rows = list(names = FALSE),
-  cols = list(names = FALSE),
-  copy = TRUE,
-  paste = TRUE
+  cols = list(names = FALSE)
 )
 
 }

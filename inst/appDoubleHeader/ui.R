@@ -5,24 +5,24 @@ colnames(m) <- c("Var1||A", "Var1||B", "Var2||A", "Var2||B")
 
 tagList(
   fluidPage(
-    tags$script(src = "custom.js"),
     titlePanel("Custom Header"),
     tags$h3("Input"),
     matrixInput(
       inputId = "matrix",
       value = m,
       class = "character",
+      pagination = TRUE,
       cols = list(
         names = TRUE,
-        createHeader = "myapp.doubleHeader.create",
-        updateHeader = "myapp.doubleHeader.update",
-        getHeader = "myapp.doubleHeader.get",
+        multiheader = TRUE,
         extend = TRUE,
         delta = 2,
         editableNames = TRUE
       ),
       rows = list(
-        names = FALSE
+        names = FALSE,
+        extend = TRUE,
+        delta = 1
       )
     )),
   tags$h3("Output"),
