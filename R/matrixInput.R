@@ -62,8 +62,8 @@ matrixInput <- function(inputId,
   if (is.null(rownames(value))) rownames(value) <- rep('', nrow(value))
   if (is.null(colnames(value))) colnames(value) <- rep('', ncol(value))
 
-  rows <- default(rows, list(names = TRUE, editableNames = FALSE, extend = FALSE))
-  cols <- default(cols, list(names = TRUE, editableNames = FALSE, extend = FALSE))
+  rows <- default(rows, list(names = TRUE, editableNames = FALSE, extend = FALSE, delta = 1))
+  cols <- default(cols, list(names = TRUE, editableNames = FALSE, extend = FALSE, delta = 1))
 
   inputField <- tags$div(
     id = inputId,
