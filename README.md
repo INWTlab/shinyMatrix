@@ -35,9 +35,8 @@ matrixInput <- function(inputId,
                         inputClass = "",
                         rows = list(),
                         cols = list(),
-                        class = "character",
-                        paste = FALSE,
-                        copy = FALSE){
+                        class = "character"
+                        pagination = FALSE){
   [...]
 }
 ```
@@ -51,8 +50,7 @@ You can define parameters as follows:
 | `rows` | `list` of parameters (see below) |
 | `cols` | `list` of parameters (see below) |
 | `class` | class of resulting matrix (`numeric` and `character`) is supported |
-| `paste` | add pasting functionality |
-| `copy` | add copy functionality |
+| `pagination` | Should the matrix be paginated (10 rows per page) |
 
 Parameter `rows` / `cols` take a list of arguments. The following is supported
 
@@ -63,9 +61,7 @@ Parameter `rows` / `cols` take a list of arguments. The following is supported
 |`editableNames`| should row/colnames be editable? |
 | `extend`| should rows/cols be automatically be added if table is filled to the last row / column? |
 | `delta` | how many blank rows/cols should be added 
-| `createHeader` | name of javascript function to override default function to create table header. The function needs to have the table element and the data object as argument
-| `updateHeader` | name of javascript function to override default function to update table header. The function needs to have the table element and the data object as argument
-| `getHeader` | name of javascript function to override default function to get names from the html table. The function needs to have the table element as argument |
+| `multiheader` | Display multiheader - currently only header spanning two columns are supported
 
 Call the matrixInput function in your UI generating, e.g. ui.R
 
@@ -114,19 +110,6 @@ library(shinyMatrix)
 startApplication("app")
 ```
 
-### Copy Paste
-
-- Select cells in matrix by dragging with the mouse
-- Press Ctrl+C to copy and Ctrl+V to paste
-- Use the textfield below to see how pasting into another application would look like
-- If you select cells in the matrix and press Ctrl+V values will be pasted into that region
-
-```r
-library(shinyMatrix)
-
-startApplication("appCopy")
-```
-
 ### Update Matrix Input from R
 
 - Generate a random matrix within the shiny server function by clicking on "Update Matrix"
@@ -156,9 +139,9 @@ startApplication("appExtend")
 
 ### Custom Column Header
 
-- Replace default header with a custom one
+- Replace default header with a multiheader
 - Automatically add 2 columns if matrix is full
 
 ```r
-startApplication("appCustom")
+startApplication("appDoubleHeader")
 ```

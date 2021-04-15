@@ -24,9 +24,7 @@ shiny::tagList(
         editableNames = TRUE,
         delta = 1,
         delete = TRUE
-      ),
-      copy = TRUE,
-      paste = TRUE
+      )
     )
   )
 )

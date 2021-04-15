@@ -26,20 +26,19 @@
 #' @param value Initial value. Should be a matrix
 #' @param class Matrix will be coerced to a matrix of this class. `character` and `numeric`
 #' are supported
-#' @param rows list of options to configure rows
+#' @param rows list of options to configure rows 
 #' @param cols list of options to configure cols
-#' @param paste enable paste functionality
-#' @param copy enable copy functionality
-#' @param copyDoubleClick enable functionality to copy cell on double click
+#' @param paste old argument
+#' @param copy old argument
+#' @param copyDoubleClick old argument
+#' @param pagination Use pagination to display matrix
 #'
 #' @examples
 #' matrixInput(
 #'   "myMatrix",
 #'   value = diag(3),
 #'   rows = list(names = FALSE),
-#'   cols = list(names = FALSE),
-#'   copy = TRUE,
-#'   paste = TRUE
+#'   cols = list(names = FALSE)
 #' )
 #'
 #' @export
@@ -56,8 +55,15 @@ matrixInput <- function(inputId,
                         pagination = FALSE){
   stopifnot(is.matrix(value))
 
+  if (copy || paste || copyDoubleClick) {
+    warning("Copy paste functionality has been removed from the current version. Please use version 0.4.0 if needed.")
+  }
+
   if (is.null(rownames(value))) rownames(value) <- rep('', nrow(value))
   if (is.null(colnames(value))) colnames(value) <- rep('', ncol(value))
+
+  rows <- default(rows, list(names = TRUE, editableNames = FALSE, extend = FALSE))
+  cols <- default(cols, list(names = TRUE, editableNames = FALSE, extend = FALSE))
 
   inputField <- tags$div(
     id = inputId,
@@ -77,12 +83,29 @@ matrixInput <- function(inputId,
     singleton(tags$head(tags$script(src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"))),
     singleton(tags$head(tags$script(src = "shinyMatrix/matrix-input.js"))),
     singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "shinyMatrix/matrix-input.css"))),
-    div(
-      class = "form-group shiny-matrix-input-container shiny-input-container",
+    tags$div(
+      class = "form-group shiny-matrix-input-container shiny-input-container-inline shiny-input-container",
       if (!is.null(label)) tags$label(label, `for` = inputId) else NULL,
       inputField
     )
   )
+}
+
+default <- function(x, o) {
+  if (is.list(o)) {
+    if (!is.list(x)) {
+      x <- o
+    } else {
+      for (i in names(o)) {
+        if (is.null(x[[i]])) {
+          x[[i]] <- o[[i]]
+        }
+      }
+    }
+  } else {
+    if (is.null(x)) x <- o
+  }
+  x
 }
 
 #' Update matrix input

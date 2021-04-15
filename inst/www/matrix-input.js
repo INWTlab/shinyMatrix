@@ -234,7 +234,7 @@ Vue.component('matrix-header-cell', {
         }
       },
       delete_all (e) {
-        this.$root.$emit('delete_all', {i: this.i, type: this.type})
+        this.$root.$emit('delete_all', {i: this.i, type: this.type, name: this.value})
         e.stopPropagation();
       },
       focus_element (e) {
@@ -371,7 +371,7 @@ $.extend(matrixInput, {
             extended_colnames () {
               let colnames = _.cloneDeep(this.colnames);
 
-              if (this.rows.extend) {
+              if (this.cols.extend) {
                 while (colnames.length < this.n_cols + this.cols.delta + this.n_cols % this.cols.delta) {
                   colnames.push('');
                 }
@@ -450,6 +450,9 @@ $.extend(matrixInput, {
           Vue.set(this.values, i, row);
         }
       }
+
+      console.log(o);
+      Shiny.setInputValue(el.id + 'delete', o);
     })
   },
   find: function(scope) {
