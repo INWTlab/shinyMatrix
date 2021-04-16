@@ -465,7 +465,7 @@ $.extend(matrixInput, {
         Vue.delete(this.colnames, o.i);
         
         for (let i = 0; i < this.values.length; i ++) {
-          let row = values[i];
+          let row = this.values[i];
           row.splice(o.i, 1);
           Vue.set(this.values, i, row);
         }

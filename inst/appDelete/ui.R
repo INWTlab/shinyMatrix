@@ -14,6 +14,7 @@ shiny::tagList(
         class = "numeric",
         cols = list(
           names = TRUE,
+          editableNames = TRUE,
           multiheader = TRUE,
           extend = TRUE,
           delta = 2,
