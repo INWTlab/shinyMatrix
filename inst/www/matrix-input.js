@@ -239,7 +239,8 @@ Vue.component('matrix-header-cell', {
         if (this.config.multiheader && this.type == 'column') {
           let first = this.i - this.i % 2;
           let second = first + 1;
-          this.$root.$emit('delete_all', {i: first, type: this.type, name: this.value});
+
+          this.$root.$emit('delete_all', {i: second, type: this.type, name: this.value});
           this.$root.$emit('delete_all', {i: first, type: this.type, name: this.value});
 
         } else {
@@ -447,11 +448,20 @@ $.extend(matrixInput, {
 
     vms[el.id].$on("delete_all", function(o) {
       if (o.type == "row") {
+        if (this.n_rows == 1 && o.i == 0) {
+          alert("You cannot delete the last row!");
+          return;
+        }
         Vue.delete(this.rownames, o.i);
         Vue.delete(this.values, o.i);
       }
 
       if (o.type == "column") {
+        if ((this.n_cols == 1 && o.i == 0) | (this.n_cols == 2 && o.i < 2 && this.cols.multiheader)) {
+          alert("You cannot delete the last column!");
+          return;
+        }
+
         Vue.delete(this.colnames, o.i);
         
         for (let i = 0; i < this.values.length; i ++) {
