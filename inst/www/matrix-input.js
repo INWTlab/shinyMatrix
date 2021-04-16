@@ -33,7 +33,7 @@ Vue.component('matrix-input', {
       },
       col_header () {
         if (this.cols.multiheader) {
-          let splitted = _.map(this.colnames, o => (o ? o.split("||") : []));
+          let splitted = _.map(this.colnames, o => (o ? o.split("||") : [""]));
           return _.zip(...splitted);
         } else {
           return [this.colnames];
@@ -61,7 +61,7 @@ Vue.component('matrix-input', {
           </tr>
           <tr v-for="i in indices" :key="i">
             <matrix-header-cell :value="(rownames[i] || '')" :i="i" type="row" :focus="focus"
-            :config="rows"/>
+            :config="rows" header="0"/>
             <matrix-cell v-for="(v, j) in values[i]" :key="j" :value="v" :i="i" :j="j" :focus="focus"
             :content_class="content_class"/>
           </tr>
@@ -116,7 +116,7 @@ Vue.component('matrix-input', {
         if(!this.$el.contains(e.target)) {
           this.focus = {type: '', i: null, j: null};
         }
-      }
+      },
     },
     mounted () {
       document.addEventListener('click', this.clicked)
@@ -155,7 +155,7 @@ Vue.component('matrix-cell', {
   methods: {
       update (e) {
         if (this.content_class == "numeric") {
-          if (!this.input_value) return;
+          if (this.input_value === undefined) return;
           
           if (this.input_value.toString().trim() != "" && isNaN(parseFloat(this.input_value))) {
             this.input_value = this.value;
@@ -218,7 +218,7 @@ Vue.component('matrix-header-cell', {
     v-focus
     />
     <span v-else>{{ value }}</span>
-    <span class="delete-button" v-if="config.delete && value != ''" @mousedown="delete_all">
+    <span class="delete-button" v-if="config.delete && header == 0" @mousedown="delete_all">
       [x]
     </span>
   </th>
@@ -236,7 +236,15 @@ Vue.component('matrix-header-cell', {
         }
       },
       delete_all (e) {
-        this.$root.$emit('delete_all', {i: this.i, type: this.type, name: this.value})
+        if (this.config.multiheader && this.type == 'column') {
+          let first = this.i - this.i % 2;
+          let second = first + 1;
+          this.$root.$emit('delete_all', {i: first, type: this.type, name: this.value});
+          this.$root.$emit('delete_all', {i: first, type: this.type, name: this.value});
+
+        } else {
+          this.$root.$emit('delete_all', {i: this.i, type: this.type, name: this.value});
+        }
         e.stopPropagation();
       },
       focus_element (e) {
@@ -453,7 +461,6 @@ $.extend(matrixInput, {
         }
       }
 
-      console.log(o);
       Shiny.setInputValue(el.id + 'delete', o);
     })
   },
@@ -462,9 +469,9 @@ $.extend(matrixInput, {
   },
   getValue: function(el) {
     let raw = {
-      data: vms[el.id].$data.values,
-      rownames: vms[el.id].$data.rownames,
-      colnames: vms[el.id].$data.colnames
+      data: _.cloneDeep(vms[el.id].$data.values),
+      rownames: _.cloneDeep(vms[el.id].$data.rownames),
+      colnames: _.cloneDeep(vms[el.id].$data.colnames)
     }
 
     sanitizeValue(raw)

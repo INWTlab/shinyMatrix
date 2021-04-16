@@ -145,3 +145,11 @@ startApplication("appExtend")
 ```r
 startApplication("appDoubleHeader")
 ```
+
+### Delete Rows and Columns
+
+- add a button to delete rows and columns. This also works for multiheader.
+
+```r
+startApplication("appDelete")
+```
