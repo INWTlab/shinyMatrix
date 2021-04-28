@@ -79,8 +79,8 @@ matrixInput <- function(inputId,
   )
 
   tagList(
-    singleton(tags$head(tags$script(src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"))),
-    singleton(tags$head(tags$script(src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"))),
+    singleton(tags$head(tags$script(src="shinyMatrix/lodash.min.js"))),
+    singleton(tags$head(tags$script(src="shinyMatrix/vue.js"))),
     singleton(tags$head(tags$script(src = "shinyMatrix/matrix-input.js"))),
     singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "shinyMatrix/matrix-input.css"))),
     tags$div(
