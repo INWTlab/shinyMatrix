@@ -7,7 +7,6 @@ Description: Implements a custom matrix input field.
 Depends: R (>= 3.5)
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Imports: shiny,
   jsonlite
 Suggests: testthat,
