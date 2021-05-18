@@ -36,7 +36,8 @@ matrixInput <- function(inputId,
                         rows = list(),
                         cols = list(),
                         class = "character"
-                        pagination = FALSE){
+                        pagination = FALSE,
+                        lazy = FALSE){
   [...]
 }
 ```
@@ -51,6 +52,7 @@ You can define parameters as follows:
 | `cols` | `list` of parameters (see below) |
 | `class` | class of resulting matrix (`numeric` and `character`) is supported |
 | `pagination` | Should the matrix be paginated (10 rows per page) |
+| `lazy` | Lazy update data on server |
 
 Parameter `rows` / `cols` take a list of arguments. The following is supported
 
@@ -153,3 +155,12 @@ startApplication("appDoubleHeader")
 ```r
 startApplication("appDelete")
 ```
+
+### Lazy Update of server values
+
+- Only update data on server when no input field is visible
+
+```r
+startApplication("appLazy")
+```
+

@@ -32,6 +32,7 @@
 #' @param copy old argument
 #' @param copyDoubleClick old argument
 #' @param pagination Use pagination to display matrix
+#' @param lazy lazy updating of server values. The new values are only sent to the server when no input field is visible
 #'
 #' @examples
 #' matrixInput(
@@ -52,7 +53,8 @@ matrixInput <- function(inputId,
                         paste = FALSE,
                         copy = FALSE,
                         copyDoubleClick = FALSE,
-                        pagination = FALSE){
+                        pagination = FALSE,
+                        lazy = FALSE){
   stopifnot(is.matrix(value))
 
   if (copy || paste || copyDoubleClick) {
@@ -75,6 +77,7 @@ matrixInput <- function(inputId,
     "data-cols" = jsonlite::toJSON(cols, auto_unbox = TRUE),
     "data-class" = jsonlite::toJSON(class, auto_unbox = FALSE),
     "data-pagination" = jsonlite::toJSON(pagination, auto_unbox = TRUE),
+    "data-lazy" = jsonlite::toJSON(lazy, auto_unbox = TRUE),
     tags$div(class = "vue-element")
   )
 
