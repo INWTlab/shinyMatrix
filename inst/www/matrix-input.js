@@ -167,6 +167,8 @@ Vue.component('matrix-cell', {
       },
       select (e) {
         if (!this.in_focus) {
+          let inputs = this.$root.$el.getElementsByTagName("input");
+          if (inputs.length > 0) inputs[0].blur();
           this.$parent.set_focus({type: 'cell', i: this.i, j: this.j})
           e.preventDefault();
         }
@@ -230,7 +232,10 @@ Vue.component('matrix-header-cell', {
       select (e) {
         if (!this.config.editableNames) return;
         if (this.header > 0) return;
+
         if (!this.in_focus) {
+          let inputs = this.$root.$el.getElementsByTagName("input");
+          if (inputs.length > 0) inputs[0].blur();
           this.$parent.set_focus({type: this.type, i: this.i, header: this.header})
           e.preventDefault();
         }
@@ -286,7 +291,7 @@ Vue.directive('focus', {
   inserted: function (el) {
     // Focus the element
     el.focus()
-  }
+  },
 })
 
 /* Helper */
