@@ -517,7 +517,7 @@ $.extend(matrixInput, {
       vms[el.id].$data.rownames = data.value.rownames;
       vms[el.id].$data.colnames = data.value.colnames;
 
-      $(el).trigger('matrix-changed');
+      $(el).trigger('matrix-change');
     }
   },
   subscribe: function(el, callback) {
