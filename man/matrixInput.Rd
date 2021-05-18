@@ -15,7 +15,8 @@ matrixInput(
   paste = FALSE,
   copy = FALSE,
   copyDoubleClick = FALSE,
-  pagination = FALSE
+  pagination = FALSE,
+  lazy = FALSE
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ are supported}
 \item{copyDoubleClick}{old argument}
 
 \item{pagination}{Use pagination to display matrix}
+
+\item{lazy}{lazy updating of server values. The new values are only sent to the server when no input field is visible}
 }
 \description{
 Use this function to create a matrix input field. Typically this would be in the `ui.R` file

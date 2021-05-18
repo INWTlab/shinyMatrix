@@ -53,7 +53,7 @@ Vue.component('matrix-input', {
     },
     template: `
       <div>
-        <table>
+        <table :class="{focused: focus.type !== ''}">
           <tr v-if="cols.names === true" v-for="(header, k) in col_header" :key="'header-' + k">
             <th v-if="rows.names === true"></th>
             <matrix-header-cell v-if="(!cols.multiheader | k > 0 | j % 2 == 0)" :span="(k == 0 && cols.multiheader ? 2 : 1)" v-for="(name, j) in header" :key="'colheader-' + k + '-' + j" :value="name" :i="j" :header="k" type="column" :focus="focus"
@@ -113,7 +113,7 @@ Vue.component('matrix-input', {
         }
       },
       clicked (e) {
-        if(!this.$el.contains(e.target)) {
+        if(!this.$el.getElementsByTagName("table")[0].contains(e.target)) {
           this.focus = {type: '', i: null, j: null};
         }
       },
@@ -412,17 +412,26 @@ $.extend(matrixInput, {
               return values;
             }
         },
-        watch: {
-            extended_values () {
-                $(el).trigger("change");
-            },
-        },
         template: `
           <matrix-input :values="extended_values" :rownames="extended_rownames" :colnames="extended_colnames"
           :rows="rows" :cols="cols" :pagination="pagination" :content_class="content_class"
           />
         `
     })
+
+    function notifyChange() {
+      let lazy = $(el).data("lazy");
+
+      if (lazy) {
+        setTimeout(function() { 
+          if (!$("table", $(el)).hasClass("focused")) {
+            $(el).trigger("matrix-change")
+          }
+        }, 100)
+      } else {
+        $(el).trigger("matrix-change")
+      }
+    }
 
     vms[el.id].$on("update_cell", function(o) {
       if (!this.values[o.i]) this.values[o.i] = [""];
@@ -431,6 +440,8 @@ $.extend(matrixInput, {
       row[o.j] = o.value;
 
       Vue.set(this.values, o.i, row);
+
+      notifyChange()
     })
 
 
@@ -444,6 +455,8 @@ $.extend(matrixInput, {
         splitted[o.header] = o.value;
         Vue.set(this.colnames, o.i, splitted.join('||'));
       }
+
+      notifyChange()
     })
 
     vms[el.id].$on("delete_all", function(o) {
@@ -472,6 +485,8 @@ $.extend(matrixInput, {
       }
 
       Shiny.setInputValue(el.id + 'delete', o);
+
+      notifyChange()
     })
   },
   find: function(scope) {
@@ -502,11 +517,11 @@ $.extend(matrixInput, {
       vms[el.id].$data.rownames = data.value.rownames;
       vms[el.id].$data.colnames = data.value.colnames;
 
-      $(el).trigger('change');
+      $(el).trigger('matrix-change');
     }
   },
   subscribe: function(el, callback) {
-    $(el).on("change", function(e) {
+    $(el).on("matrix-change", function(e) {
       callback(true);
     });
   },
