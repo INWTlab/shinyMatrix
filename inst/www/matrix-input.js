@@ -54,14 +54,14 @@ Vue.component('matrix-input', {
     template: `
       <div>
         <table>
-          <tr v-for="(header, k) in col_header" :key="'header-' + k">
-            <th></th>
+          <tr v-if="cols.names === true" v-for="(header, k) in col_header" :key="'header-' + k">
+            <th v-if="rows.names === true"></th>
             <matrix-header-cell v-if="(!cols.multiheader | k > 0 | j % 2 == 0)" :span="(k == 0 && cols.multiheader ? 2 : 1)" v-for="(name, j) in header" :key="'colheader-' + k + '-' + j" :value="name" :i="j" :header="k" type="column" :focus="focus"
             :config="cols"/>
           </tr>
           <tr v-for="i in indices" :key="i">
             <matrix-header-cell :value="(rownames[i] || '')" :i="i" type="row" :focus="focus"
-            :config="rows" header="0"/>
+            :config="rows" header="0" v-if="rows.names === true"/>
             <matrix-cell v-for="(v, j) in values[i]" :key="j" :value="v" :i="i" :j="j" :focus="focus"
             :content_class="content_class"/>
           </tr>
