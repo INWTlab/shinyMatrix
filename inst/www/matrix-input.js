@@ -439,7 +439,7 @@ $.extend(matrixInput, {
     }
 
     vms[el.id].$on("update_cell", function(o) {
-      if (!this.values[o.i]) this.values[o.i] = [""];
+      if (!this.values[o.i]) this.values[o.i] = _.times(this.n_cols, _.constant(''));
 
       let row = this.values[o.i];
       row[o.j] = o.value;
