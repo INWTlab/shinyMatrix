@@ -5,4 +5,8 @@ sudo: false
 cache: packages
 
 after_success:
-- Rscript -e 'covr::codecov()'
+  - Rscript -e 'covr::codecov()'
+  - test $TRAVIS_PULL_REQUEST == "false" &&
+    test $TRAVIS_BRANCH == "master" &&
+    curl https://raw.githubusercontent.com/INWTlab/drat/main/deploy.sh > deploy.sh &&
+    bash deploy.sh
