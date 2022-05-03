@@ -33,6 +33,8 @@ matrixInput(
 
 \item{cols}{list of options to configure cols}
 
+\item{cells}{list of options to configure cells}
+
 \item{class}{Matrix will be coerced to a matrix of this class. `character` and `numeric`
 are supported}
 
@@ -79,7 +81,8 @@ matrixInput(
   "myMatrix",
   value = diag(3),
   rows = list(names = FALSE),
-  cols = list(names = FALSE)
+  cols = list(names = FALSE),
+  cells = list(editableCells = FALSE)
 )
 
 }

@@ -34,6 +34,7 @@
 #' are supported
 #' @param rows list of options to configure rows 
 #' @param cols list of options to configure cols
+#' @param cells list of options to configure cells
 #' @param paste old argument
 #' @param copy old argument
 #' @param copyDoubleClick old argument
@@ -45,7 +46,8 @@
 #'   "myMatrix",
 #'   value = diag(3),
 #'   rows = list(names = FALSE),
-#'   cols = list(names = FALSE)
+#'   cols = list(names = FALSE),
+#'   cells = list(editableCells = FALSE)
 #' )
 #'
 #' @export
