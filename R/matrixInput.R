@@ -19,6 +19,12 @@
 #' have the table element and the data object as argument}
 #'   \item{getHeader}{same as createHeader but with table element as only argument}
 #' }
+#' 
+#' Similarly, the parameter `cells` takes a list of arguments:
+#' 
+#' \describe{
+#'   \item{editableCells}{logical, should cells be editable (default `TRUE`)}
+#' }
 #'
 #' @param inputId The input slot that will be used to access the value
 #' @param label label for input field
@@ -49,6 +55,7 @@ matrixInput <- function(inputId,
                         inputClass = "",
                         rows = list(),
                         cols = list(),
+                        cells = list(),
                         class = "character",
                         paste = FALSE,
                         copy = FALSE,
@@ -66,6 +73,7 @@ matrixInput <- function(inputId,
 
   rows <- default(rows, list(names = TRUE, editableNames = FALSE, extend = FALSE, delta = 1))
   cols <- default(cols, list(names = TRUE, editableNames = FALSE, extend = FALSE, delta = 1))
+  cells <- default(cells, list(editableCells = TRUE))
 
   inputField <- tags$div(
     id = inputId,
@@ -75,6 +83,7 @@ matrixInput <- function(inputId,
     "data-colnames" = jsonlite::toJSON(colnames(value)),
     "data-rows" = jsonlite::toJSON(rows, auto_unbox = TRUE),
     "data-cols" = jsonlite::toJSON(cols, auto_unbox = TRUE),
+    "data-cells" = jsonlite::toJSON(cells, auto_unbox = TRUE),
     "data-class" = jsonlite::toJSON(class, auto_unbox = FALSE),
     "data-pagination" = jsonlite::toJSON(pagination, auto_unbox = TRUE),
     "data-lazy" = jsonlite::toJSON(lazy, auto_unbox = TRUE),

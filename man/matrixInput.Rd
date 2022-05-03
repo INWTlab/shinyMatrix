@@ -11,6 +11,7 @@ matrixInput(
   inputClass = "",
   rows = list(),
   cols = list(),
+  cells = list(),
   class = "character",
   paste = FALSE,
   copy = FALSE,
@@ -65,6 +66,12 @@ are supported:
 default function to create/update table header. The function needs to
 have the table element and the data object as argument}
   \item{getHeader}{same as createHeader but with table element as only argument}
+}
+
+Similarly, the parameter `cells` takes a list of arguments:
+
+\describe{
+  \item{editableCells}{logical, should cells be editable (default `TRUE`)}
 }
 }
 \examples{
