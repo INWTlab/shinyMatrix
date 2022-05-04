@@ -130,6 +130,15 @@ startApplication("appUpdate")
 startApplication("appRownames")
 ```
 
+### Uneditable cells
+
+- Make table cells uneditable
+- No clicking into cells, no changing values
+
+```r
+startApplication("appUneditableCells")
+```
+
 ### Extend Matrix Automatically
 
 - If matrix is full (last row and columns contain values) rows and columns are added automatically 
