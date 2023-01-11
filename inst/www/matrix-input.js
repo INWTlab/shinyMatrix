@@ -168,25 +168,32 @@ Vue.component('matrix-cell', {
       select (e) {
         if (!this.config.editableCells) return;
         if (!this.in_focus) {
-          let inputs = this.$root.$el.getElementsByTagName("input");
-          if (inputs.length > 0) inputs[0].blur();
+          this.blur()
           this.$parent.set_focus({type: 'cell', i: this.i, j: this.j})
           e.preventDefault();
         }
       },
       next_column (e) {
+        this.blur()
         this.$parent.set_focus({type: 'cell', i: this.i, j: this.j + 1});
         e.preventDefault()
       },
       previous_column (e) {
+        this.blur()
         this.$parent.set_focus({type: 'cell', i: this.i, j: this.j - 1})
         e.preventDefault()
       },
       next_row () {
+        this.blur()
         this.$parent.set_focus({type: 'cell', i: this.i + 1, j: this.j})
       },
       previous_row () {
+        this.blur()
         this.$parent.set_focus({type: 'cell', i: this.i - 1, j: this.j})
+      },
+      blur () {
+        let inputs = this.$root.$el.getElementsByTagName("input");
+        if (inputs.length > 0) inputs[0].blur();
       }
   },
   watch: {
@@ -235,8 +242,7 @@ Vue.component('matrix-header-cell', {
         if (this.header > 0) return;
 
         if (!this.in_focus) {
-          let inputs = this.$root.$el.getElementsByTagName("input");
-          if (inputs.length > 0) inputs[0].blur();
+          this.blur()
           this.$parent.set_focus({type: this.type, i: this.i, header: this.header})
           e.preventDefault();
         }
@@ -259,25 +265,33 @@ Vue.component('matrix-header-cell', {
       },
       next_column (e) {
         if (this.type == "column") {
+          this.blur()
           this.$parent.set_focus({type: 'column', i: this.i + 1});
         }
         e.preventDefault()
       },
       previous_column (e) {
         if (this.type == "column") {
+          this.blur()
           this.$parent.set_focus({type: 'column', i: this.i - 1})
         }
         e.preventDefault()
       },
       next_row () {
         if (this.type == "row") {
+          this.blur()
           this.$parent.set_focus({type: 'row', i: this.i + 1})
         }
       },
       previous_row () {
         if (this.type == "row") {
+          this.blur()
           this.$parent.set_focus({type: 'row', i: this.i - 1,})
         }
+      },
+      blur () {
+        let inputs = this.$root.$el.getElementsByTagName("input");
+        if (inputs.length > 0) inputs[0].blur();
       }
   },
   watch: {
