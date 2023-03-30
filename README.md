@@ -8,7 +8,7 @@ title: Matrix Input for Shiny
 
 # Matrix Input for Shiny
 
-This package provides an input field to enter matrix conveniently in a shiny application. It supports tabbing and jumping linewise in the matrix, copy-pasting from other spread sheets applications.
+This package provides an input field to enter matrix conveniently in a shiny application. It supports tabbing and jumping linewise in the matrix.
 
 ![Screenshot Simple Matrix](https://github.com/INWTlab/shiny-matrix/raw/master/screenshot1.png)
 
@@ -142,7 +142,7 @@ startApplication("appUneditableCells")
 ### Extend Matrix Automatically
 
 - If matrix is full (last row and columns contain values) rows and columns are added automatically 
-- Copy pasting functionality enabled
+
 
 ```r
 startApplication("appExtend")
