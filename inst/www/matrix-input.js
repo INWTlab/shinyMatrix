@@ -351,7 +351,7 @@ function sanitizeValue(value){
 
   nrow = Math.max(value.data.length, value.rownames.length);
 
-  ncols = value.data.map(function(el){ return el.length; });
+  ncols = value.data.map(function(el){ return el !== undefined ? el.length : 0; });
   ncol = Math.max(Math.max.apply(null, ncols), value.colnames.length);
 
   if (ncol == 0 && nrow == 0) value.data = [];
@@ -448,7 +448,8 @@ $.extend(matrixInput, {
 
               if (this.cols.extend) {
                 for (let i = 0; i < this.values.length; i ++) {
-                  let x = values[i];
+                  let x = values[i] || [];
+
                   while (x.length < this.extended_colnames.length) {
                     x.push('');
                   }
