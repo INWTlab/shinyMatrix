@@ -9,7 +9,8 @@ Vue.component('matrix-input', {
           j: null
         },
         current_page: 1,
-        items_per_page: 10
+        items_per_page: 10,
+        i_need_to_move: false
       }
     },
     computed: {
@@ -89,11 +90,16 @@ Vue.component('matrix-input', {
       set_focus (value) {
         if (!value) {
           this.focus = {type: '', i: null, j: null}
+          this.i_need_to_move = null
         }
 
         if (value.type == "row") {
           if (value.i < this.rownames.length && value.i >= 0 ) {
             this.focus = value;
+            this.i_need_to_move = null
+          }
+          if (value.i >= this.rownames.length) {
+            this.i_need_to_move = value;
           }
           return;
         }
@@ -101,6 +107,10 @@ Vue.component('matrix-input', {
         if (value.type == "column") {
           if (value.i < this.colnames.length && value.i >= 0 ) {
             this.focus = value;
+            this.i_need_to_move = null
+          }
+          if (value.i >= this.colnames.length) {
+            this.i_need_to_move = value;
           }
           return;
         }
@@ -110,6 +120,19 @@ Vue.component('matrix-input', {
             value.i >= 0 &&
             value.j >= 0) {
           this.focus = value;
+          this.i_need_to_move = null
+        }
+        
+        if (value.i >= this.rownames.length || value.j >= this.colnames.length) {
+          this.i_need_to_move = value;
+        }
+
+        if (value.i == -1 && this.cols.names) {
+          this.set_focus({type: "column", i: value.j})
+        }
+
+        if (value.j == -1 && this.rows.names) {
+          this.set_focus({type: "row", i: value.i})
         }
       },
       clicked (e) {
@@ -124,6 +147,18 @@ Vue.component('matrix-input', {
     destroyed () {
       document.removeEventListener('click', this.clicked)
     },
+    watch: {
+      rownames() {
+        if (this.i_need_to_move) {
+          this.set_focus(this.i_need_to_move)
+        }
+      },
+      colnames() {
+        if (this.i_need_to_move) {
+          this.set_focus(this.i_need_to_move)
+        }
+      }
+    }
 })
 
 Vue.component('matrix-cell', {
@@ -213,9 +248,8 @@ Vue.component('matrix-header-cell', {
   computed: {
     in_focus () {
       return this.focus.type == this.type &&
-        this.focus.i == this.i &&
-        this.focus.header == this.header
-    }
+        this.focus.i == this.i
+      }
   },
   template: `
   <th @mousedown="select" :class="{active: in_focus, editable: config.editableNames}"
@@ -243,7 +277,7 @@ Vue.component('matrix-header-cell', {
 
         if (!this.in_focus) {
           this.blur()
-          this.$parent.set_focus({type: this.type, i: this.i, header: this.header})
+          this.$parent.set_focus({type: this.type, i: this.i})
           e.preventDefault();
         }
       },
@@ -267,6 +301,9 @@ Vue.component('matrix-header-cell', {
         if (this.type == "column") {
           this.blur()
           this.$parent.set_focus({type: 'column', i: this.i + 1});
+        } else {
+          this.blur()
+          this.$parent.set_focus({type: 'cell', i: this.i, j: 0})
         }
         e.preventDefault()
       },
@@ -281,6 +318,9 @@ Vue.component('matrix-header-cell', {
         if (this.type == "row") {
           this.blur()
           this.$parent.set_focus({type: 'row', i: this.i + 1})
+        } else {
+          this.blur()
+          this.$parent.set_focus({type: 'cell', i: 0, j: this.i})
         }
       },
       previous_row () {
@@ -325,7 +365,7 @@ function sanitizeValue(value){
 
   nrow = Math.max(value.data.length, value.rownames.length);
 
-  ncols = value.data.map(function(el){ return el.length; });
+  ncols = value.data.map(function(el){ return el !== undefined ? el.length : 0; });
   ncol = Math.max(Math.max.apply(null, ncols), value.colnames.length);
 
   if (ncol == 0 && nrow == 0) value.data = [];
@@ -422,7 +462,8 @@ $.extend(matrixInput, {
 
               if (this.cols.extend) {
                 for (let i = 0; i < this.values.length; i ++) {
-                  let x = values[i];
+                  let x = values[i] || [];
+
                   while (x.length < this.extended_colnames.length) {
                     x.push('');
                   }
