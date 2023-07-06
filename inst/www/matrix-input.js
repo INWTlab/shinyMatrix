@@ -9,7 +9,8 @@ Vue.component('matrix-input', {
           j: null
         },
         current_page: 1,
-        items_per_page: 10
+        items_per_page: 10,
+        i_need_to_move: false
       }
     },
     computed: {
@@ -89,11 +90,16 @@ Vue.component('matrix-input', {
       set_focus (value) {
         if (!value) {
           this.focus = {type: '', i: null, j: null}
+          this.i_need_to_move = null
         }
 
         if (value.type == "row") {
           if (value.i < this.rownames.length && value.i >= 0 ) {
             this.focus = value;
+            this.i_need_to_move = null
+          }
+          if (value.i >= this.rownames.length) {
+            this.i_need_to_move = value;
           }
           return;
         }
@@ -101,6 +107,10 @@ Vue.component('matrix-input', {
         if (value.type == "column") {
           if (value.i < this.colnames.length && value.i >= 0 ) {
             this.focus = value;
+            this.i_need_to_move = null
+          }
+          if (value.i >= this.colnames.length) {
+            this.i_need_to_move = value;
           }
           return;
         }
@@ -110,6 +120,11 @@ Vue.component('matrix-input', {
             value.i >= 0 &&
             value.j >= 0) {
           this.focus = value;
+          this.i_need_to_move = null
+        }
+        
+        if (value.i >= this.rownames.length || value.j >= this.colnames.length) {
+          this.i_need_to_move = value;
         }
       },
       clicked (e) {
@@ -124,6 +139,18 @@ Vue.component('matrix-input', {
     destroyed () {
       document.removeEventListener('click', this.clicked)
     },
+    watch: {
+      rownames() {
+        if (this.i_need_to_move) {
+          this.set_focus(this.i_need_to_move)
+        }
+      },
+      colnames() {
+        if (this.i_need_to_move) {
+          this.set_focus(this.i_need_to_move)
+        }
+      }
+    }
 })
 
 Vue.component('matrix-cell', {
@@ -213,9 +240,8 @@ Vue.component('matrix-header-cell', {
   computed: {
     in_focus () {
       return this.focus.type == this.type &&
-        this.focus.i == this.i &&
-        this.focus.header == this.header
-    }
+        this.focus.i == this.i
+      }
   },
   template: `
   <th @mousedown="select" :class="{active: in_focus, editable: config.editableNames}"
@@ -243,7 +269,7 @@ Vue.component('matrix-header-cell', {
 
         if (!this.in_focus) {
           this.blur()
-          this.$parent.set_focus({type: this.type, i: this.i, header: this.header})
+          this.$parent.set_focus({type: this.type, i: this.i})
           e.preventDefault();
         }
       },
