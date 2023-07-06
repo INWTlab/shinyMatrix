@@ -126,6 +126,14 @@ Vue.component('matrix-input', {
         if (value.i >= this.rownames.length || value.j >= this.colnames.length) {
           this.i_need_to_move = value;
         }
+
+        if (value.i == -1 && this.cols.names) {
+          this.set_focus({type: "column", i: value.j})
+        }
+
+        if (value.j == -1 && this.rows.names) {
+          this.set_focus({type: "row", i: value.i})
+        }
       },
       clicked (e) {
         if(!this.$el.getElementsByTagName("table")[0].contains(e.target)) {
@@ -293,6 +301,9 @@ Vue.component('matrix-header-cell', {
         if (this.type == "column") {
           this.blur()
           this.$parent.set_focus({type: 'column', i: this.i + 1});
+        } else {
+          this.blur()
+          this.$parent.set_focus({type: 'cell', i: this.i, j: 0})
         }
         e.preventDefault()
       },
@@ -307,6 +318,9 @@ Vue.component('matrix-header-cell', {
         if (this.type == "row") {
           this.blur()
           this.$parent.set_focus({type: 'row', i: this.i + 1})
+        } else {
+          this.blur()
+          this.$parent.set_focus({type: 'cell', i: 0, j: this.i})
         }
       },
       previous_row () {
