@@ -13,3 +13,4 @@ Imports: shiny,
 Suggests: testthat,
     covr
 RoxygenNote: 7.2.1
+URL: https://inwtlab.github.io/shiny-matrix/
