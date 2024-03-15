@@ -9,3 +9,7 @@
 ^codecov\.yml$
 ^\.covrignore$
 ^\.git$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
