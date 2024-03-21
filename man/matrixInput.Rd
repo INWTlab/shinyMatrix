@@ -17,7 +17,8 @@ matrixInput(
   copy = FALSE,
   copyDoubleClick = FALSE,
   pagination = FALSE,
-  lazy = FALSE
+  lazy = FALSE,
+  formatCell = NULL
 )
 }
 \arguments{
@@ -47,6 +48,8 @@ are supported}
 \item{pagination}{Use pagination to display matrix}
 
 \item{lazy}{lazy updating of server values. The new values are only sent to the server when no input field is visible}
+
+\item{formatCell}{format to be used for formatting cell values, i.e. ".2f" . This uses d3-format (https://d3js.org/d3-format)}
 }
 \description{
 Use this function to create a matrix input field. Typically this would be in the `ui.R` file

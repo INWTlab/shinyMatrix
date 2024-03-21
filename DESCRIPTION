@@ -1,6 +1,6 @@
 Package: shinyMatrix
 Title: Shiny Matrix Input Field 
-Version: 0.7.0
+Version: 0.8.0
 Date: 2024-03-13
 Author: Andreas Neudecker
 Maintainer: Andreas Neudecker <andreas.neudecker@inwt-statistics.de>
@@ -12,5 +12,5 @@ Imports: shiny,
   jsonlite
 Suggests: testthat,
     covr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.1
 URL: https://inwtlab.github.io/shiny-matrix/
