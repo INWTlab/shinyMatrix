@@ -40,7 +40,8 @@
 #' @param copyDoubleClick old argument
 #' @param pagination Use pagination to display matrix
 #' @param lazy lazy updating of server values. The new values are only sent to the server when no input field is visible
-#'
+#' @param formatCell format to be used for formatting cell values, i.e. ".2f" . This uses d3-format (https://d3js.org/d3-format)
+#' 
 #' @examples
 #' matrixInput(
 #'   "myMatrix",
@@ -63,7 +64,8 @@ matrixInput <- function(inputId,
                         copy = FALSE,
                         copyDoubleClick = FALSE,
                         pagination = FALSE,
-                        lazy = FALSE){
+                        lazy = FALSE,
+                        formatCell = NULL){
   stopifnot(is.matrix(value))
 
   if (copy || paste || copyDoubleClick) {
@@ -89,11 +91,13 @@ matrixInput <- function(inputId,
     "data-class" = jsonlite::toJSON(class, auto_unbox = FALSE),
     "data-pagination" = jsonlite::toJSON(pagination, auto_unbox = TRUE),
     "data-lazy" = jsonlite::toJSON(lazy, auto_unbox = TRUE),
+    "data-format-cell" = formatCell,
     tags$div(class = "vue-element")
   )
 
   tagList(
     singleton(tags$head(tags$script(src="shinyMatrix/lodash.min.js"))),
+    singleton(tags$head(tags$script(src="shinyMatrix/d3-format.min.js"))),
     singleton(tags$head(tags$script(src="shinyMatrix/vue.js"))),
     singleton(tags$head(tags$script(src = "shinyMatrix/matrix-input.js"))),
     singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "shinyMatrix/matrix-input.css"))),

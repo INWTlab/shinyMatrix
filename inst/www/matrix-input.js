@@ -1,6 +1,6 @@
 /* Vue */
 Vue.component('matrix-input', {
-    props: ["values", "rownames", "colnames", "rows", "cols", "cells", "pagination", "content_class", "multiheader"],
+    props: ["values", "rownames", "colnames", "rows", "cols", "cells", "pagination", "content_class", "multiheader", "format_cell"],
     data () {
       return {
         focus: {
@@ -64,7 +64,7 @@ Vue.component('matrix-input', {
             <matrix-header-cell :value="(rownames[i] || '')" :i="i" type="row" :focus="focus"
             :config="rows" header="0" v-if="rows.names === true"/>
             <matrix-cell v-for="(v, j) in values[i]" :key="j" :value="v" :i="i" :j="j" :focus="focus"
-            :content_class="content_class" :config="cells"/>
+            :content_class="content_class" :config="cells" :format_cell="format_cell"/>
           </tr>
         </table>
         <div class="pagination" v-if="pagination">
@@ -162,10 +162,11 @@ Vue.component('matrix-input', {
 })
 
 Vue.component('matrix-cell', {
-    props: ["value", "i", "j", "focus", "config", "content_class"],
+    props: ["value", "i", "j", "focus", "config", "content_class", "format_cell"],
     data () {
        return {
-           input_value: this.value
+           input_value: this.value,
+           format_cell_function: this.format_cell ? d3.format(this.format_cell) : f => f
        }
     },
     computed: {
@@ -184,7 +185,7 @@ Vue.component('matrix-cell', {
       v-on:keydown.shift.tab="previous_column"
       v-focus
       />
-      <span v-else>{{ value }}</span>
+      <span v-else>{{ format_cell_function(value) }}</span>
     </td>
   `,
   methods: {
@@ -416,7 +417,8 @@ $.extend(matrixInput, {
             cols: $(el).data("cols"),
             cells: $(el).data("cells"),
             content_class: $(el).data("class")[0],
-            pagination: $(el).data("pagination")
+            pagination: $(el).data("pagination"),
+            format_cell: $(el).data("format-cell")
         },
         computed: {
             n_rows () {
@@ -476,7 +478,7 @@ $.extend(matrixInput, {
         },
         template: `
           <matrix-input :values="extended_values" :rownames="extended_rownames" :colnames="extended_colnames"
-          :rows="rows" :cols="cols" :cells="cells" :pagination="pagination" :content_class="content_class"
+          :rows="rows" :cols="cols" :cells="cells" :pagination="pagination" :content_class="content_class" :format_cell="format_cell"
           />
         `
     })
