@@ -1,3 +1,7 @@
+# ShinyMatrix 0.8.0
+
+* Add parameter to format cells
+
 # ShinyMatrix 0.7.0
 
 ## Updates
