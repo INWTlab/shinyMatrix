@@ -1,8 +1,7 @@
 # Matrix Input for Shiny
 
 [![R-CMD-check](https://github.com/INWTlab/shiny-matrix/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/INWTlab/shiny-matrix/actions/workflows/R-CMD-check.yaml)
-[![Travis-CI Build Status](https://travis-ci.org/INWTlab/shiny-matrix.svg?branch=master)](https://travis-ci.org/INWTlab/shiny-matrix)
-[![Coverage Status](https://img.shields.io/codecov/c/github/INWTlab/shiny-matrix/master.svg)](https://codecov.io/github/INWTlab/shiny-matrix?branch=master)
+[![Coverage Status](https://img.shields.io/codecov/c/github/INWTlab/shiny-matrix/master.svg)](https://app.codecov.io/github/INWTlab/shiny-matrix?branch=master)
 [![CRAN status](https://www.r-pkg.org/badges/version/shinyMatrix)](https://cran.r-project.org/package=shinyMatrix)
 
 # Matrix Input for Shiny
