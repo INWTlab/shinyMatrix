@@ -1,0 +1,19 @@
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'DESCRIPTION'
+  workflow_dispatch:
+
+jobs:
+  drat-upload:
+    runs-on: ubuntu-20.04
+    name: Drat Upload
+    steps:
+      - uses: mikemahoney218/upload-to-drat-repo@v0.2
+        with:
+          drat_repo: 'https://github.com/INWTlab/drat'
+          token: "${{ secrets.DRAT_TOKEN }}" # Muss noch erstellt werden
+          commit_message: "GH Actions: drat - update shinyMatrix"
+          commit_email: "jan.abel@inwt-statistics.de"  # besser jenkins-inwt user oder neuer service Account
