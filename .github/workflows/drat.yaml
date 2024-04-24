@@ -14,6 +14,6 @@ jobs:
       - uses: mikemahoney218/upload-to-drat-repo@v0.2
         with:
           drat_repo: 'https://github.com/INWTlab/drat'
-          token: "${{ secrets.DRAT_TOKEN }}" # Muss noch erstellt werden
-          commit_message: "GH Actions: drat - update shinyMatrix"
-          commit_email: "jan.abel@inwt-statistics.de"  # besser jenkins-inwt user oder neuer service Account
+          token: "${{ secrets.GH_ACTION_DRAT }}"
+          commit_message: "deploy to drat - update shinyMatrix via gh actions"
+          commit_email: "brother-mfc@inwt-statistics.de"
