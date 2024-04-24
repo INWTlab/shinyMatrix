@@ -17,4 +17,3 @@ jobs:
           token: "${{ secrets.GH_ACTION_DRAT }}"
           commit_message: "deploy to drat - update shinyMatrix via gh actions"
           commit_email: "brother-mfc@inwt-statistics.de"
-
