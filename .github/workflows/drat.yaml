@@ -11,10 +11,11 @@ jobs:
     runs-on: ubuntu-20.04
     name: Drat Upload
     steps:
-      - uses: mikemahoney218/upload-to-drat-repo@v0.2
+      - uses: mikemahoney218/upload-to-drat-repo@v0.3
         with:
           drat_repo: 'INWTlab/drat'
           token: "${{ secrets.GH_ACTION_DRAT }}"
           commit_message: "deploy to drat - update shinyMatrix via gh actions"
           commit_email: "brother-mfc@inwt-statistics.de"
+          archive: true
 
