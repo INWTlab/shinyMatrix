@@ -1,30 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/404.html</loc>
-  </url>
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/reference/matrixInput.html</loc>
-  </url>
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/reference/startApplication.html</loc>
-  </url>
-  <url>
-    <loc>https://inwtlab.github.io/shiny-matrix/reference/updateMatrixInput.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://inwtlab.github.io/shiny-matrix/404.html</loc></url>
+<url><loc>https://inwtlab.github.io/shiny-matrix/LICENSE-text.html</loc></url>
+<url><loc>https://inwtlab.github.io/shiny-matrix/authors.html</loc></url>
+<url><loc>https://inwtlab.github.io/shiny-matrix/index.html</loc></url>
+<url><loc>https://inwtlab.github.io/shiny-matrix/news/index.html</loc></url>
+<url><loc>https://inwtlab.github.io/shiny-matrix/reference/index.html</loc></url>
+<url><loc>https://inwtlab.github.io/shiny-matrix/reference/matrixInput.html</loc></url>
+<url><loc>https://inwtlab.github.io/shiny-matrix/reference/startApplication.html</loc></url>
+<url><loc>https://inwtlab.github.io/shiny-matrix/reference/updateMatrixInput.html</loc></url>
 </urlset>
+
