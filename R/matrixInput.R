@@ -103,7 +103,7 @@ matrixInput <- function(inputId,
     singleton(tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "shinyMatrix/matrix-input.css"))),
     tags$div(
       class = "form-group shiny-matrix-input-container shiny-input-container-inline shiny-input-container",
-      if (!is.null(label)) tags$label(label, `for` = inputId) else NULL,
+      tags$label(class = c("control-label", if (is.null(label)) "shiny-label-null"), `for` = inputId, label),
       inputField
     )
   )
