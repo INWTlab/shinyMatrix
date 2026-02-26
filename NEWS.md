@@ -1,3 +1,7 @@
+# ShinyMatrix 0.8.1
+
+* Make matrixInputs' labels' classes like other Shiny inputs'
+
 # ShinyMatrix 0.8.0
 
 * Add parameter to format cells

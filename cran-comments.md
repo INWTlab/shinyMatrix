@@ -1,14 +1,10 @@
 ## R CMD check results
-
+On local Pop!_OS 24.04 LTS, R 4.5.2:
 0 errors ✔ | 0 warnings ✔ | 0 notes ✔
 
-## Updates in 0.8.0
+## Submission summary
+This is a patch release
 
- * Add parameter to format cells
+## Updates in 0.8.1
 
-## Updates in 0.7.0
- * Fix: Bug when using extend feature for rows in the matrix #21
- * Feature: Change or disable click behavior #26
- * Improve tabbing and extension functionality
- * Online Documentation (pkgdown) & R-CMD Check
-
+* Make matrixInputs' labels' classes like other Shiny inputs for better UI consistency.
