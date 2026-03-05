@@ -8,3 +8,10 @@ This is a patch release
 ## Updates in 0.8.1
 
 * Make matrixInputs' labels' classes like other Shiny inputs for better UI consistency.
+
+## Resubmission
+
+The previous submission was flagged for a missing Authors@R field.
+
+## Changes
+* Replaced Author and Maintainer fields with Authors@R in DESCRIPTION as requested by CRAN.
